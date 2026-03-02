@@ -3,25 +3,41 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc; /* Slate 50 */
+  --foreground: #0f172a; /* Slate 900 */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .btn-primary {
+    @apply rounded-xl bg-blue-600 px-4 py-3 font-medium text-white transition-all hover:bg-blue-700 active:scale-95;
+  }
+  
+  .card {
+    @apply rounded-2xl border border-slate-200 bg-white p-4 shadow-sm;
+  }
+  
+  .nav-item {
+    @apply flex flex-col items-center justify-center space-y-1 text-slate-500 transition-colors;
+  }
+  
+  .nav-item-active {
+    @apply text-blue-600;
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Mobile-first constraints */
+@media (min-width: 641px) {
+  .mobile-container {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    box-shadow: 0 0 40px rgba(0,0,0,0.1);
+    background: white;
   }
 }

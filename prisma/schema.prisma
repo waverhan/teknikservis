@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ServiceStatus {
+  NEW
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Business {
+  id                String           @id @default(cuid())
+  email             String           @unique
+  hashedPassword    String
+  name              String
+  phone             String?
+  address           String?
+  logo              String?
+  slug              String           @unique
+  customDomain     String?          @unique
+  domainVerified   Boolean          @default(false)
+  isPublic         Boolean          @default(true)
+  primaryColor     String?          @default("#3B82F6")
+  coverImage       String?
+  publicDescription String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  customers         Customer[]
+  serviceRequests   ServiceRequest[]
+  receipts          Receipt[]
+}
+
+model Customer {
+  id              String           @id @default(cuid())
+  name            String
+  phone           String
+  email           String?
+  address         String?
+  businessId      String
+  business        Business         @relation(fields: [businessId], references: [id])
+  serviceRequests ServiceRequest[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([businessId])
+}
+
+model ServiceRequest {
+  id          String   @id @default(cuid())
+  description String
+  notes       String?
+  status      ServiceStatus @default(NEW)
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id])
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+  receipt     Receipt?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([businessId])
+  @@index([customerId])
+}
+
+model Receipt {
+  id               String         @id @default(cuid())
+  price            Decimal        @db.Decimal(10, 2)
+  businessId       String
+  business         Business       @relation(fields: [businessId], references: [id])
+  serviceRequestId String         @unique
+  serviceRequest   ServiceRequest @relation(fields: [serviceRequestId], references: [id])
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@index([businessId])
+}
