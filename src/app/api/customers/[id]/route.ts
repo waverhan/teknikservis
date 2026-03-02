@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request, { params }: { params: { id: string } }) {
     const session = await getSession();
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -16,7 +18,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
         if (!customer) return NextResponse.json({ error: "Customer not found" }, { status: 404 });
         return NextResponse.json(customer);
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Failed to fetch customer" }, { status: 500 });
     }
 }
@@ -42,7 +44,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         });
 
         return NextResponse.json(customer);
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Failed to update customer" }, { status: 500 });
     }
 }
@@ -60,7 +62,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
         });
 
         return NextResponse.json({ message: "Customer deleted successfully" });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Failed to delete customer" }, { status: 500 });
     }
 }

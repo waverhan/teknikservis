@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
     try {
         const body = await request.json();
@@ -46,7 +48,7 @@ export async function POST(request: Request) {
         });
 
         return NextResponse.json({ success: true, id: serviceRequest.id });
-    } catch (error: any) {
+    } catch (error) {
         console.error('Public Service Request Error:', error);
         return NextResponse.json({ error: "İşlem sırasında bir hata oluştu." }, { status: 500 });
     }

@@ -26,7 +26,7 @@ export async function verifyJWT(token: string) {
     try {
         const { payload } = await jwtVerify(token, secret);
         return payload as { businessId: string; email: string };
-    } catch (error) {
+    } catch {
         return null;
     }
 }

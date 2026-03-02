@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
     const session = await getSession();
 
@@ -25,7 +27,7 @@ export async function POST(request: Request) {
         });
 
         return NextResponse.json({ success: true, business: updatedBusiness });
-    } catch (error: any) {
+    } catch (error) {
         console.error('Settings Update Error:', error);
         return NextResponse.json({ error: "Ayarlar güncellenirken bir hata oluştu." }, { status: 500 });
     }

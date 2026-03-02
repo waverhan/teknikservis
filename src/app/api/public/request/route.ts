@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
     try {
         const { slug, name, phone, email, address, description } = await req.json();
@@ -19,7 +21,8 @@ export async function POST(req: Request) {
         }
 
         // Use transaction to ensure both customer and request are created
-        const result = await prisma.$transaction(async (tx) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const result = await prisma.$transaction(async (tx: any) => {
             // 1. Create customer scoped to this business
             const customer = await tx.customer.create({
                 data: {

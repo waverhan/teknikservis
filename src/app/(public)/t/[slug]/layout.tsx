@@ -1,5 +1,7 @@
 import { getTenantBySlug } from "@/lib/tenant";
 import { notFound } from "next/navigation";
+
+export const dynamic = 'force-dynamic';
 import { Metadata } from "next";
 
 interface TenantLayoutProps {
@@ -39,7 +41,7 @@ export default async function TenantLayout({ children, params }: TenantLayoutPro
     }
 
     return (
-        <div className="min-h-screen bg-slate-50" style={{ '--tenant-primary': tenant.primaryColor || '#3B82F6' } as any}>
+        <div className="min-h-screen bg-slate-50" style={{ '--tenant-primary': tenant.primaryColor || '#3B82F6' } as React.CSSProperties}>
             {/* Dynamic Theme Styles */}
             <style dangerouslySetInnerHTML={{
                 __html: `

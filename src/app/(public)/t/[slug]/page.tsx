@@ -1,11 +1,12 @@
 import { getTenantBySlug } from "@/lib/tenant";
 import { notFound } from "next/navigation";
+
+export const dynamic = 'force-dynamic';
 import Image from "next/image";
 import {
     Phone,
     MapPin,
     MessageCircle,
-    ChevronRight,
     ShieldCheck,
     Clock,
     ArrowRight,
@@ -53,7 +54,7 @@ export default async function TenantPage({ params }: TenantPageProps) {
 
                     <div className="max-w-xs mx-auto mb-10">
                         <p className="text-sm text-slate-500 font-medium leading-relaxed italic">
-                            "{tenant.publicDescription || 'Sizin için buradayız. Hizmet kalitesinden ödün vermeden güvenilir teknik servis sunmaktayız.'}"
+                            &quot;{tenant.publicDescription || 'Sizin için buradayız. Hizmet kalitesinden ödün vermeden güvenilir teknik servis sunmaktayız.'}&quot;
                         </p>
                     </div>
 

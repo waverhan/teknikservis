@@ -4,22 +4,27 @@ import { useEffect, useState } from 'react';
 import {
     Globe,
     Palette,
-    Layout,
     Save,
     Loader2,
     CheckCircle2,
     AlertCircle,
     ExternalLink,
-    Smartphone,
     Info
 } from 'lucide-react';
+
+interface IBusiness {
+    slug: string;
+    isPublic: boolean;
+    primaryColor: string;
+    publicDescription: string;
+}
 
 export default function PublicSettingsPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [business, setBusiness] = useState<any>(null);
+    const [business, setBusiness] = useState<IBusiness | null>(null);
 
     const colors = [
         { name: 'Blue', value: '#3B82F6' },
@@ -67,8 +72,8 @@ export default function PublicSettingsPage() {
 
             setSuccess(true);
             setTimeout(() => setSuccess(false), 3000);
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Güncelleme sırasında bir hata oluştu');
         } finally {
             setSaving(false);
         }
@@ -81,6 +86,8 @@ export default function PublicSettingsPage() {
             </div>
         );
     }
+
+    if (!business) return null;
 
     return (
         <div className="flex flex-col space-y-8 px-6 py-10 max-w-2xl mx-auto">

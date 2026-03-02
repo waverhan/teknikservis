@@ -44,7 +44,7 @@ export default function PublicRequestForm({ slug }: PublicRequestFormProps) {
                 setStatus('error');
                 setMessage(data.error || 'Talep gönderilirken bir hata oluştu.');
             }
-        } catch (err) {
+        } catch {
             setStatus('error');
             setMessage('Bağlantı hatası oluştu. Lütfen tekrar deneyin.');
         }

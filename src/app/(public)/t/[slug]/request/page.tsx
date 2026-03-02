@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+
+export const dynamic = 'force-dynamic';
 import {
     User,
     Phone,
@@ -51,8 +53,8 @@ export default function RequestPage({ params }: RequestPageProps) {
             }
 
             setSuccess(true);
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Bir hata oluştu.');
         } finally {
             setLoading(false);
         }

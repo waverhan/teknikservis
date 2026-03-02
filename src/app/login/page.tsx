@@ -30,7 +30,7 @@ export default function LoginPage() {
             } else {
                 setError(data.error || 'Giriş başarısız oldu');
             }
-        } catch (err) {
+        } catch {
             setError('Bir hata oluştu. Lütfen tekrar deneyin.');
         } finally {
             setLoading(false);

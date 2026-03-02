@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request, { params }: { params: { id: string } }) {
     const session = await getSession();
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -22,7 +24,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
         if (!receipt) return NextResponse.json({ error: "Receipt not found" }, { status: 404 });
         return NextResponse.json(receipt);
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Failed to fetch receipt" }, { status: 500 });
     }
 }

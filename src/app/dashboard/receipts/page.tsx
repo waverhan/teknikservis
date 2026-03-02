@@ -5,11 +5,27 @@ import { ReceiptText, Search, ChevronRight, Printer, QrCode, Smartphone } from '
 import ReceiptQRCode from '@/components/ReceiptQRCode';
 import PrintReceipt from '@/components/PrintReceipt';
 
+interface IReceipt {
+    id: string;
+    price: number | string;
+    createdAt: string;
+    serviceRequest: {
+        id: string;
+        description: string;
+        createdAt: string;
+        customer: {
+            name: string;
+            phone: string;
+            address?: string;
+        };
+    };
+}
+
 export default function ReceiptsPage() {
-    const [receipts, setReceipts] = useState<any[]>([]);
+    const [receipts, setReceipts] = useState<IReceipt[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedReceipt, setSelectedReceipt] = useState<any>(null);
+    const [selectedReceipt, setSelectedReceipt] = useState<IReceipt | null>(null);
     const [showPrintModal, setShowPrintModal] = useState(false);
     const [showQRModal, setShowQRModal] = useState(false);
 

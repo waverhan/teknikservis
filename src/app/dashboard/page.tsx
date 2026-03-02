@@ -1,7 +1,10 @@
 import { getSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { Plus, Users, ClipboardList, Wallet, ArrowUpRight } from "lucide-react";
+
+export const dynamic = "force-dynamic";
+import { Plus, Users, ClipboardList, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
@@ -29,8 +32,8 @@ export default async function DashboardPage() {
                     </h1>
                     <p className="text-sm text-slate-500 font-medium">Bu hafta neler yapıyoruz?</p>
                 </div>
-                <div className="h-12 w-12 rounded-2xl bg-slate-100 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden">
-                    {business?.logo ? <img src={business.logo} alt="logo" /> : <div className="text-slate-400 font-bold">SF</div>}
+                <div className="h-12 w-12 rounded-2xl bg-slate-100 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden relative">
+                    {business?.logo ? <Image src={business.logo} alt="logo" fill className="object-cover" /> : <div className="text-slate-400 font-bold">SF</div>}
                 </div>
             </header>
 

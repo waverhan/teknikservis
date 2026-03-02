@@ -1,5 +1,7 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 import Image from "next/image";
 import PublicRequestForm from "@/components/PublicRequestForm";
 
@@ -37,9 +39,11 @@ export default async function PublicBusinessPage({
 
                     <div className="relative z-10 flex flex-col items-center">
                         {business.logo ? (
-                            <img
+                            <Image
                                 src={business.logo}
                                 alt={business.name}
+                                width={80}
+                                height={80}
                                 className="w-20 h-20 rounded-3xl bg-white p-2 shadow-lg mb-4 object-contain"
                             />
                         ) : (

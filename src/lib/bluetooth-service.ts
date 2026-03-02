@@ -1,4 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ESCPOS, combineArrays } from "./escpos";
+
+// Declare global bluetooth types for browser environments
+declare global {
+    interface Navigator {
+        bluetooth: any;
+    }
+}
+
+type BluetoothDevice = any;
+type BluetoothRemoteGATTCharacteristic = any;
 
 /**
  * Modern Bluetooth ESC/POS Service

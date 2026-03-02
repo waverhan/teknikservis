@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request, { params }: { params: { id: string } }) {
     const session = await getSession();
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -17,7 +19,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
         if (!serviceRequest) return NextResponse.json({ error: "Service request not found" }, { status: 404 });
         return NextResponse.json(serviceRequest);
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Failed to fetch service request" }, { status: 500 });
     }
 }
@@ -43,7 +45,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         });
 
         return NextResponse.json(serviceRequest);
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Failed to update service request" }, { status: 500 });
     }
 }
@@ -62,7 +64,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
         });
 
         return NextResponse.json({ message: "Service request deleted successfully" });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Failed to delete service request" }, { status: 500 });
     }
 }
