@@ -1,8 +1,15 @@
+import "dotenv/config";
 import { PrismaClient } from '@prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { Pool } from 'pg'
 
 const prismaClientSingleton = () => {
+  if (!process.env.DATABASE_URL) {
+    console.error("❌ ERROR: DATABASE_URL is not defined in environment variables!");
+  } else {
+    console.log("📡 Initializing Prisma with Database URL (first 15 chars):", process.env.DATABASE_URL.substring(0, 15) + "...");
+  }
+
   const pool = new Pool({ connectionString: process.env.DATABASE_URL })
   const adapter = new PrismaPg(pool)
   return new PrismaClient({ adapter })

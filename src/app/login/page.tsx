@@ -28,7 +28,10 @@ export default function LoginPage() {
             if (res.ok) {
                 router.push('/dashboard');
             } else {
-                setError(data.error || 'Giriş başarısız oldu');
+                const message = data.details
+                    ? `${data.error}: ${data.details} (Code: ${data.code || '?'})`
+                    : (data.error || 'Giriş başarısız oldu');
+                setError(message);
             }
         } catch {
             setError('Bir hata oluştu. Lütfen tekrar deneyin.');
