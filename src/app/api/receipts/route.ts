@@ -54,8 +54,9 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json(receipt);
-    } catch (error: any) {
-        console.error("Receipt creation error:", error);
-        return NextResponse.json({ error: "Failed to create receipt", details: error.message }, { status: 500 });
+    } catch (error) {
+        const err = error as any;
+        console.error("Receipt creation error:", err);
+        return NextResponse.json({ error: "Failed to create receipt", details: err.message }, { status: 500 });
     }
 }

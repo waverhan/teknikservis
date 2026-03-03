@@ -163,7 +163,7 @@ export default function ServiceRequestDetailPage() {
                             <label className="text-[10px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-1">
                                 <MessageCircle size={12} /> Özel Notlar
                             </label>
-                            <p className="text-xs font-bold text-slate-400 italic">"{request.notes}"</p>
+                            <p className="text-xs font-bold text-slate-400 italic">&quot;{request.notes}&quot;</p>
                         </div>
                     )}
                     <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
