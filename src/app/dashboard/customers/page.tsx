@@ -96,9 +96,10 @@ export default function CustomersPage() {
                     </div>
                 ) : (
                     filtered.map(customer => (
-                        <div
+                        <Link
                             key={customer.id}
-                            className="bg-white p-4 rounded-2xl border border-slate-50 shadow-sm hover:border-blue-100 transition-all active:scale-[0.98]"
+                            href={`/dashboard/customers/${customer.id}/edit`}
+                            className="bg-white p-4 rounded-2xl border border-slate-50 shadow-sm hover:border-blue-100 transition-all active:scale-[0.98] block"
                         >
                             <div className="flex items-center justify-between mb-3">
                                 <h3 className="font-bold text-slate-900">{customer.name}</h3>
@@ -123,7 +124,7 @@ export default function CustomersPage() {
                                     </div>
                                 )}
                             </div>
-                        </div>
+                        </Link>
                     ))
                 )}
             </div>
