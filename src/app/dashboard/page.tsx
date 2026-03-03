@@ -17,10 +17,17 @@ export default async function DashboardPage() {
             prisma.customer.count({ where: { businessId: session.businessId } }),
             prisma.serviceRequest.count({ where: { businessId: session.businessId, status: 'IN_PROGRESS' } }),
             prisma.serviceRequest.count({ where: { businessId: session.businessId, status: 'NEW' } }),
+            prisma.serviceRequest.findMany({
+                where: { businessId: session.businessId },
+                take: 3,
+                orderBy: { createdAt: 'desc' },
+                include: { customer: { select: { name: true } } }
+            })
         ])
     ]);
 
-    const [customerCount, inProgressCount, newJobCount] = counts;
+    // @ts-ignore - Prisma return type handling in server components
+    const [customerCount, inProgressCount, newJobCount, recentRequests] = counts;
 
     return (
         <div className="flex flex-col space-y-6 px-4 py-8">
@@ -59,22 +66,22 @@ export default async function DashboardPage() {
             <section>
                 <h2 className="text-sm font-bold text-slate-800 mb-3 ml-1">Hızlı İşlemler</h2>
                 <div className="grid grid-cols-2 gap-3">
-                    <button className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-blue-200 transition-colors text-left group">
+                    <Link href="/dashboard/service-requests/new" className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-blue-200 transition-colors text-left group">
                         <div className="p-2.5 rounded-xl bg-orange-50 text-orange-600 group-hover:scale-110 transition-transform">
                             <Plus size={20} />
                         </div>
                         <div>
                             <p className="text-xs font-bold text-slate-900 leading-tight">İş <br />Emri</p>
                         </div>
-                    </button>
-                    <button className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-blue-200 transition-colors text-left group">
+                    </Link>
+                    <Link href="/dashboard/customers/new" className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-blue-200 transition-colors text-left group">
                         <div className="p-2.5 rounded-xl bg-green-50 text-green-600 group-hover:scale-110 transition-transform">
                             <Users size={20} />
                         </div>
                         <div>
                             <p className="text-xs font-bold text-slate-900 leading-tight">Müşteri <br />Kaydı</p>
                         </div>
-                    </button>
+                    </Link>
                 </div>
             </section>
 
@@ -88,10 +95,30 @@ export default async function DashboardPage() {
                 </div>
 
                 <div className="space-y-3">
-                    {/* Minimal empty state visually appealing */}
-                    <div className="flex flex-col items-center justify-center p-8 bg-white/50 rounded-2xl border border-dashed border-slate-300">
-                        <p className="text-xs text-slate-400 font-medium italic">Henüz aktif bir iş emri bulunmuyor.</p>
-                    </div>
+                    {recentRequests.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center p-8 bg-white/50 rounded-2xl border border-dashed border-slate-300">
+                            <p className="text-xs text-slate-400 font-medium italic">Henüz aktif bir iş emri bulunmuyor.</p>
+                        </div>
+                    ) : (
+                        recentRequests.map(request => (
+                            <div key={request.id} className="flex items-center justify-between p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                                <div>
+                                    <p className="text-xs font-black text-slate-900 uppercase tracking-tight truncate max-w-[150px]">{request.description}</p>
+                                    <p className="text-[10px] font-bold text-slate-400 mt-0.5">{request.customer.name}</p>
+                                </div>
+                                <div className="flex flex-col items-end gap-1">
+                                    <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest ${request.status === 'NEW' ? 'bg-orange-50 text-orange-600' :
+                                        request.status === 'IN_PROGRESS' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'
+                                        }`}>
+                                        {request.status === 'NEW' ? 'Yeni' : request.status === 'IN_PROGRESS' ? 'İşlemde' : 'Tamam'}
+                                    </span>
+                                    <span className="text-[8px] font-bold text-slate-300">
+                                        {new Date(request.createdAt).toLocaleDateString('tr-TR')}
+                                    </span>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </section>
 
