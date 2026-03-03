@@ -26,7 +26,6 @@ export default async function DashboardPage() {
         ])
     ]);
 
-    // @ts-ignore - Prisma return type handling in server components
     const [customerCount, inProgressCount, newJobCount, recentRequests] = counts;
 
     return (

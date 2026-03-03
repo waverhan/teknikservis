@@ -4,11 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
     ArrowLeft,
-    ClipboardList,
     User,
     FileText,
     MessageCircle,
-    Save,
     Loader2,
     Check,
     Plus
