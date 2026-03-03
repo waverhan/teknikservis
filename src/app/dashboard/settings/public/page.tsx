@@ -115,7 +115,7 @@ export default function PublicSettingsPage() {
                     <p className="text-sm font-black tracking-tight">{business.slug}.serviceflow.com</p>
                 </div>
                 <a
-                    href={`/t/${business.slug}`}
+                    href={`/b/${business.slug}`}
                     target="_blank"
                     className="p-3 bg-white/10 hover:bg-white text-white hover:text-slate-900 rounded-2xl transition-all relative z-10"
                 >
