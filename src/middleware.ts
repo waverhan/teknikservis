@@ -51,12 +51,18 @@ export async function middleware(request: NextRequest) {
     }
 
     // 3. Multi-Tenant Routing
+    // Only rewrite if it's a tenant request
     if (!pathname.startsWith('/api') && !pathname.startsWith('/_next') && !pathname.includes('.')) {
         if (slug) {
             return NextResponse.rewrite(new URL(`/t/${slug}${pathname}`, request.url));
         }
-        if (isCustomDomain) {
-            // Rewrite to a domain handler that logic in Step 3/Step 8 handles via lib
+
+        // Only treat as custom domain if hostname is NOT the root domain 
+        // and NOT the Railway default domain (if we're on Railway)
+        const isRailwayDomain = hostname.endsWith('.up.railway.app');
+        const isRoot = hostname === rootDomain || (isRailwayDomain && !process.env.ROOT_DOMAIN);
+
+        if (isCustomDomain && !isRoot) {
             return NextResponse.rewrite(new URL(`/d/${hostname}${pathname}`, request.url));
         }
     }
