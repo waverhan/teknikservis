@@ -125,9 +125,10 @@ export default function ServiceRequestsPage() {
                     </div>
                 ) : (
                     filtered.map(request => (
-                        <div
+                        <Link
                             key={request.id}
-                            className="bg-white p-5 rounded-[2rem] border border-slate-50 shadow-sm hover:border-blue-100 transition-all active:scale-[0.98] group"
+                            href={`/dashboard/service-requests/${request.id}`}
+                            className="bg-white p-5 rounded-[2rem] border border-slate-50 shadow-sm hover:border-blue-100 transition-all active:scale-[0.98] group block"
                         >
                             <div className="flex items-start justify-between mb-4">
                                 <div className="space-y-1">
@@ -146,7 +147,7 @@ export default function ServiceRequestsPage() {
                                     {new Date(request.createdAt).toLocaleDateString('tr-TR')}
                                 </span>
                             </div>
-                        </div>
+                        </Link>
                     ))
                 )}
             </div>
