@@ -175,7 +175,7 @@ export default function LandingPage() {
                     <div className="flex gap-1 mb-3">
                       {[1, 2, 3, 4, 5].map(s => <Star key={s} size={14} className="text-yellow-400 fill-yellow-400" />)}
                     </div>
-                    <p className="text-lg font-medium italic mb-4 opacity-80">"{t.quote}"</p>
+                    <p className="text-lg font-medium italic mb-4 opacity-80">&quot;{t.quote}&quot;</p>
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-blue-600/20" />
                       <div>
@@ -219,7 +219,7 @@ export default function LandingPage() {
             Daha Az Kağıt, <br /> Daha Çok İş.
           </h2>
           <p className="text-lg text-slate-500 font-medium italic">
-            "Teknik servis yönetimi hiç bu kadar akıcı ve profesyonel olmamıştı."
+            &quot;Teknik servis yönetimi hiç bu kadar akıcı ve profesyonel olmamıştı.&quot;
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/register" className="h-16 px-10 bg-blue-600 text-white rounded-3xl font-black uppercase tracking-widest flex items-center justify-center gap-3 shadow-2xl shadow-blue-200 hover:bg-blue-700 active:scale-95 transition-all">
@@ -244,7 +244,7 @@ export default function LandingPage() {
                 <span className="text-lg font-black tracking-tight uppercase">Teknik<span className="text-blue-600">Servis</span></span>
               </div>
               <p className="text-sm text-slate-400 font-medium leading-relaxed max-w-sm uppercase tracking-tight">
-                Türkiye'nin en gelişmiş bulut tabanlı teknik servis yönetim platformu. İşletmenizi geleceğe taşıyın.
+                Türkiye&apos;nin en gelişmiş bulut tabanlı teknik servis yönetim platformu. İşletmenizi geleceğe taşıyın.
               </p>
               <div className="flex items-center gap-4">
                 {[1, 2, 3, 4].map(i => <div key={i} className="w-10 h-10 bg-white border border-slate-200 rounded-xl hover:border-blue-500 transition-all cursor-pointer shadow-sm shadow-slate-100" />)}
