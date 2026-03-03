@@ -15,8 +15,10 @@ import {
     CreditCard,
     Loader2,
     Calendar,
-    Phone
+    Phone,
+    Edit
 } from 'lucide-react';
+import Link from 'next/link';
 import PrintReceipt from '@/components/PrintReceipt';
 
 interface IServiceRequest {
@@ -122,17 +124,25 @@ export default function ServiceRequestDetailPage() {
     return (
         <div className="flex flex-col space-y-6 px-4 py-8 max-w-lg mx-auto pb-24">
             {/* Header */}
-            <header className="flex items-center gap-4">
-                <button onClick={() => router.back()} className="p-2.5 bg-white rounded-xl shadow-sm border border-slate-100 text-slate-500 active:scale-95 transition-all">
-                    <ArrowLeft size={20} />
-                </button>
-                <div>
-                    <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none uppercase">İş Emri Detayı</h1>
-                    <div className={`mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${statusInfo.color}`}>
-                        {statusInfo.icon}
-                        {statusInfo.label}
+            <header className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <button onClick={() => router.back()} className="p-2.5 bg-white rounded-xl shadow-sm border border-slate-100 text-slate-500 active:scale-95 transition-all">
+                        <ArrowLeft size={20} />
+                    </button>
+                    <div>
+                        <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none uppercase">İş Emri Detayı</h1>
+                        <div className={`mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${statusInfo.color}`}>
+                            {statusInfo.icon}
+                            {statusInfo.label}
+                        </div>
                     </div>
                 </div>
+                <Link
+                    href={`/dashboard/service-requests/${id}/edit`}
+                    className="p-3 bg-white rounded-2xl border border-slate-100 text-slate-400 hover:text-blue-600 shadow-sm active:scale-95 transition-all"
+                >
+                    <Edit size={20} />
+                </Link>
             </header>
 
             {/* Customer Info Card */}

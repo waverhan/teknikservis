@@ -40,18 +40,24 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        const receipt = await prisma.receipt.create({
-            data: {
-                price: Number(price),
-                serviceRequestId,
-                businessId: session.businessId,
-            },
-            include: {
-                serviceRequest: {
-                    include: { customer: true }
+        const [receipt] = await prisma.$transaction([
+            prisma.receipt.create({
+                data: {
+                    price: Number(price),
+                    serviceRequestId,
+                    businessId: session.businessId,
+                },
+                include: {
+                    serviceRequest: {
+                        include: { customer: true }
+                    }
                 }
-            }
-        });
+            }),
+            prisma.serviceRequest.update({
+                where: { id: serviceRequestId },
+                data: { status: 'COMPLETED' }
+            })
+        ]);
 
         return NextResponse.json(receipt);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

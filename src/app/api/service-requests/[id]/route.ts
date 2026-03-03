@@ -29,24 +29,32 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     try {
-        const { status, description, notes } = await req.json();
+        const body = await req.json();
+        const { status, description, notes } = body;
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const updateData: any = {};
+        if (status) updateData.status = status;
+        if (description !== undefined) updateData.description = description;
+        if (notes !== undefined) updateData.notes = notes;
 
         const serviceRequest = await prisma.serviceRequest.update({
             where: {
                 id: params.id,
                 businessId: session.businessId,
             },
-            data: {
-                status,
-                description,
-                notes,
-            },
-            include: { customer: true },
+            data: updateData,
+            include: { customer: true, receipt: true },
         });
 
         return NextResponse.json(serviceRequest);
-    } catch {
-        return NextResponse.json({ error: "Failed to update service request" }, { status: 500 });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        console.error("Service request update error:", error);
+        return NextResponse.json({
+            error: "Failed to update service request",
+            details: error.message
+        }, { status: 500 });
     }
 }
 
