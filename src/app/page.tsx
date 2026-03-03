@@ -79,7 +79,7 @@ export default function LandingPage() {
             <div className="absolute -inset-10 bg-blue-400/20 blur-[100px] rounded-full" />
             <div className="relative bg-white p-4 rounded-[2.5rem] shadow-[0_32px_80px_-20px_rgba(0,0,0,0.15)] border border-slate-100 animate-float">
               <Image
-                src="/teknik_servis_mockup_1772552635375.png"
+                src="/hero-mockup.png"
                 alt="Dashboard Mockup"
                 width={800}
                 height={600}
