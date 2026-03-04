@@ -125,10 +125,22 @@ export default function PublicSettingsPage() {
 
                 <div className="flex flex-col gap-1 relative z-10">
                     <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-400">Canlı Yayın Adresi</span>
-                    <p className="text-lg font-black tracking-tight italic">{business.slug}.teknikservis.info</p>
+                    <p className="text-lg font-black tracking-tight italic flex items-center gap-2">
+                        {business.slug}.teknikservis.info
+                        <button
+                            type="button"
+                            onClick={() => {
+                                navigator.clipboard.writeText(`https://${business.slug}.teknikservis.info`);
+                                alert('Link kopyalandı!');
+                            }}
+                            className="p-1 px-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all text-blue-300 text-[8px] font-black"
+                        >
+                            KOPYALA
+                        </button>
+                    </p>
                 </div>
                 <a
-                    href={`/b/${business.slug}`}
+                    href={`https://${business.slug}.teknikservis.info`}
                     target="_blank"
                     className="px-6 py-3 bg-white text-slate-900 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:scale-105 transition-all relative z-10 shadow-lg"
                 >

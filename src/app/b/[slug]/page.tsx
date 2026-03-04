@@ -2,7 +2,8 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import PublicRequestForm from "@/components/PublicRequestForm";
-import { Phone, MapPin, ExternalLink, Globe, Star } from "lucide-react";
+import { Phone, MapPin, ExternalLink, Globe, Star, MessageCircle } from "lucide-react";
+import ShareButton from "@/components/ShareButton";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +32,7 @@ export default async function PublicBusinessPage({
     }
 
     const primaryColor = business.primaryColor || "#3B82F6";
+    const shareUrl = `https://${business.slug}.teknikservis.info`;
 
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col items-center p-4 py-12 md:py-20 font-sans">
@@ -41,6 +43,11 @@ export default async function PublicBusinessPage({
                     className="p-10 md:p-14 text-center text-white relative transition-all duration-1000"
                     style={{ backgroundColor: primaryColor }}
                 >
+                    {/* Share Button Overlay */}
+                    <div className="absolute top-6 right-6 z-20">
+                        <ShareButton url={shareUrl} title={business.name} />
+                    </div>
+
                     {/* Decorative Elements */}
                     <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
                         <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -75,7 +82,7 @@ export default async function PublicBusinessPage({
                     </div>
                 </div>
 
-                {/* About Section (New) */}
+                {/* About Section */}
                 {business.publicDescription && (
                     <div className="p-10 md:p-14 bg-slate-50/50 border-b border-slate-100 text-center">
                         <p className="text-lg md:text-xl font-bold text-slate-700 leading-relaxed italic">
@@ -92,6 +99,20 @@ export default async function PublicBusinessPage({
                     </div>
 
                     <PublicRequestForm slug={business.slug} />
+
+                    {/* WhatsApp CTA */}
+                    {business.phone && (
+                        <div className="pt-4">
+                            <a
+                                href={`https://wa.me/9${business.phone.replace(/\D/g, '')}`}
+                                target="_blank"
+                                className="w-full py-6 bg-emerald-500 hover:bg-emerald-600 text-white rounded-[2rem] font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all shadow-xl shadow-emerald-500/20 group hover:scale-[1.02] active:scale-95"
+                            >
+                                <MessageCircle size={24} className="group-hover:rotate-12 transition-transform" />
+                                <span>WhatsApp ile Destek Al</span>
+                            </a>
+                        </div>
+                    )}
                 </div>
 
                 {/* Contact & Maps Section */}
