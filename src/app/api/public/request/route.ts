@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
     try {
-        const { slug, name, phone, email, address, description } = await req.json();
+        const { slug, name, phone, email, address, description, deviceBrand, deviceModel } = await req.json();
 
         if (!slug || !name || !phone || !description) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -38,6 +38,8 @@ export async function POST(req: Request) {
             const serviceRequest = await tx.serviceRequest.create({
                 data: {
                     description,
+                    deviceBrand,
+                    deviceModel,
                     customerId: customer.id,
                     businessId: business.id,
                     status: "NEW", // Service requests started via public form are always NEW
@@ -56,3 +58,4 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Failed to submit service request" }, { status: 500 });
     }
 }
+Stone

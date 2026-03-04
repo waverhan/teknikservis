@@ -11,7 +11,8 @@ import {
     Trash2,
     Clock,
     PlayCircle,
-    CheckCircle2
+    CheckCircle2,
+    Smartphone
 } from 'lucide-react';
 
 export default function EditServiceRequestPage() {
@@ -20,7 +21,9 @@ export default function EditServiceRequestPage() {
     const [formData, setFormData] = useState({
         description: '',
         notes: '',
-        status: ''
+        status: '',
+        deviceBrand: '',
+        deviceModel: ''
     });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -38,7 +41,9 @@ export default function EditServiceRequestPage() {
                         setFormData({
                             description: data.description || '',
                             notes: data.notes || '',
-                            status: data.status || 'NEW'
+                            status: data.status || 'NEW',
+                            deviceBrand: data.deviceBrand || '',
+                            deviceModel: data.deviceModel || ''
                         });
                     }
                     setLoading(false);
@@ -112,7 +117,7 @@ export default function EditServiceRequestPage() {
         <div className="flex flex-col space-y-6 px-4 py-8 max-w-lg mx-auto">
             {/* Header */}
             <header className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 text-left">
                     <button
                         onClick={() => router.back()}
                         className="p-2.5 bg-white rounded-xl shadow-sm border border-slate-100 text-slate-500 active:scale-95 transition-all"
@@ -140,7 +145,7 @@ export default function EditServiceRequestPage() {
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 text-left">
                 <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 space-y-6">
                     {/* Status */}
                     <div className="space-y-2">
@@ -161,6 +166,33 @@ export default function EditServiceRequestPage() {
                                     <span className="text-[10px] font-black uppercase tracking-tight mt-1">{s.label}</span>
                                 </button>
                             ))}
+                        </div>
+                    </div>
+
+                    {/* Device Brand & Model */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cihaz Markası</label>
+                            <div className="relative">
+                                <Smartphone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                                <input
+                                    type="text"
+                                    placeholder="Marka"
+                                    className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-12 pr-4 h-12 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all"
+                                    value={formData.deviceBrand}
+                                    onChange={(e) => setFormData({ ...formData, deviceBrand: e.target.value })}
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cihaz Modeli</label>
+                            <input
+                                type="text"
+                                placeholder="Model"
+                                className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 h-12 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all"
+                                value={formData.deviceModel}
+                                onChange={(e) => setFormData({ ...formData, deviceModel: e.target.value })}
+                            />
                         </div>
                     </div>
 
@@ -214,3 +246,4 @@ export default function EditServiceRequestPage() {
         </div>
     );
 }
+stone

@@ -57,6 +57,8 @@ model ServiceRequest {
   id          String   @id @default(cuid())
   description String
   notes       String?
+  deviceBrand String?
+  deviceModel String?
   status      ServiceStatus @default(NEW)
   businessId  String
   business    Business @relation(fields: [businessId], references: [id])

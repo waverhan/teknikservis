@@ -14,6 +14,8 @@ export default function PublicRequestForm({ slug }: PublicRequestFormProps) {
         email: '',
         address: '',
         description: '',
+        deviceBrand: '',
+        deviceModel: '',
     });
 
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -60,7 +62,7 @@ export default function PublicRequestForm({ slug }: PublicRequestFormProps) {
                 <p className="text-sm text-slate-500 font-medium leading-relaxed max-w-xs">{message}</p>
                 <button
                     onClick={() => {
-                        setFormData({ name: '', phone: '', email: '', address: '', description: '' });
+                        setFormData({ name: '', phone: '', email: '', address: '', description: '', deviceBrand: '', deviceModel: '' });
                         setStatus('idle');
                     }}
                     className="mt-6 text-sm font-bold text-blue-600 hover:underline"
@@ -72,7 +74,7 @@ export default function PublicRequestForm({ slug }: PublicRequestFormProps) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5 text-left">
             <div className="space-y-1">
                 <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 ml-1">Ad Soyad *</label>
                 <input
@@ -96,6 +98,29 @@ export default function PublicRequestForm({ slug }: PublicRequestFormProps) {
                     placeholder="05XX XXX XX XX"
                     className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-5 py-4 text-sm font-medium focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-50/50 transition-all outline-none"
                 />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 ml-1">Cihaz Markası</label>
+                    <input
+                        name="deviceBrand"
+                        value={formData.deviceBrand}
+                        onChange={handleChange}
+                        placeholder="Örn: Apple, Samsung"
+                        className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-5 py-4 text-sm font-medium focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-50/50 transition-all outline-none"
+                    />
+                </div>
+                <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 ml-1">Cihaz Modeli</label>
+                    <input
+                        name="deviceModel"
+                        value={formData.deviceModel}
+                        onChange={handleChange}
+                        placeholder="Örn: iPhone 13, Galaxy S21"
+                        className="w-full rounded-2xl border border-slate-100 bg-slate-50 px-5 py-4 text-sm font-medium focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-50/50 transition-all outline-none"
+                    />
+                </div>
             </div>
 
             <div className="space-y-1">

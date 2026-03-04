@@ -16,7 +16,8 @@ import {
     Loader2,
     Calendar,
     Phone,
-    Edit
+    Edit,
+    Smartphone
 } from 'lucide-react';
 import Link from 'next/link';
 import PrintReceipt from '@/components/PrintReceipt';
@@ -25,6 +26,8 @@ interface IServiceRequest {
     id: string;
     description: string;
     notes: string | null;
+    deviceBrand: string | null;
+    deviceModel: string | null;
     status: 'NEW' | 'IN_PROGRESS' | 'COMPLETED';
     createdAt: string;
     customer: {
@@ -122,7 +125,7 @@ export default function ServiceRequestDetailPage() {
     const statusInfo = getStatusInfo(request.status);
 
     return (
-        <div className="flex flex-col space-y-6 px-4 py-8 max-w-lg mx-auto pb-24">
+        <div className="flex flex-col space-y-6 px-4 py-8 max-w-lg mx-auto pb-24 text-left">
             {/* Header */}
             <header className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -164,10 +167,25 @@ export default function ServiceRequestDetailPage() {
                 <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                     <FileText size={14} /> İş Detayları
                 </h3>
+
                 <div className="space-y-4">
+                    {(request.deviceBrand || request.deviceModel) && (
+                        <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-2xl border border-blue-100">
+                            <Smartphone className="text-blue-500" size={20} />
+                            <div>
+                                <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] leading-none mb-1">Cihaz Bilgisi</p>
+                                <p className="text-sm font-black text-blue-900 uppercase tracking-tight">
+                                    {request.deviceBrand} {request.deviceModel}
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none mb-2">Arıza / İşlem</p>
                         <p className="text-sm font-bold text-slate-700 leading-relaxed">{request.description}</p>
                     </div>
+
                     {request.notes && (
                         <div className="space-y-2">
                             <label className="text-[10px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-1">
@@ -176,6 +194,7 @@ export default function ServiceRequestDetailPage() {
                             <p className="text-xs font-bold text-slate-400 italic">&quot;{request.notes}&quot;</p>
                         </div>
                     )}
+
                     <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
                         <Calendar size={12} />
                         Kayıt: {new Date(request.createdAt).toLocaleString('tr-TR')}
@@ -212,7 +231,7 @@ export default function ServiceRequestDetailPage() {
             </section>
 
             {/* Receipt Action */}
-            <div className="fixed bottom-6 left-6 right-6 flex gap-3 max-w-lg mx-auto">
+            <div className="fixed bottom-6 left-6 right-6 flex gap-3 max-w-lg mx-auto z-50">
                 {request.receipt ? (
                     <button
                         onClick={() => setShowPrintModal(true)}
@@ -240,7 +259,7 @@ export default function ServiceRequestDetailPage() {
                         <p className="text-xs text-slate-400 font-bold mb-6">İşlemi tamamlamak için tutar girin.</p>
 
                         <form onSubmit={handleCreateReceipt} className="space-y-6">
-                            <div className="space-y-2">
+                            <div className="space-y-2 text-left">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Servis Ücreti (TL)</label>
                                 <input
                                     required
@@ -287,3 +306,4 @@ export default function ServiceRequestDetailPage() {
         </div>
     );
 }
+stone

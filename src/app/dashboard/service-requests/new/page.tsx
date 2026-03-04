@@ -9,7 +9,8 @@ import {
     MessageCircle,
     Loader2,
     Check,
-    Plus
+    Plus,
+    Smartphone
 } from 'lucide-react';
 
 interface Customer {
@@ -27,6 +28,8 @@ export default function NewServiceRequestPage() {
     const [searchTerm, setSearchTerm] = useState('');
 
     const [formData, setFormData] = useState({
+        deviceBrand: '',
+        deviceModel: '',
         description: '',
         notes: ''
     });
@@ -104,7 +107,7 @@ export default function NewServiceRequestPage() {
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-5 text-left">
                 {/* Customer Selection Card */}
                 <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 space-y-4">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
@@ -169,6 +172,33 @@ export default function NewServiceRequestPage() {
 
                 {/* Job Details Card */}
                 <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 space-y-5">
+                    {/* Device Brand & Model */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cihaz Markası</label>
+                            <div className="relative">
+                                <Smartphone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                                <input
+                                    type="text"
+                                    placeholder="Marka"
+                                    className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-12 pr-4 h-12 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all"
+                                    value={formData.deviceBrand}
+                                    onChange={(e) => setFormData({ ...formData, deviceBrand: e.target.value })}
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cihaz Modeli</label>
+                            <input
+                                type="text"
+                                placeholder="Model"
+                                className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 h-12 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all"
+                                value={formData.deviceModel}
+                                onChange={(e) => setFormData({ ...formData, deviceModel: e.target.value })}
+                            />
+                        </div>
+                    </div>
+
                     {/* Description */}
                     <div className="space-y-1.5">
                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">İş / Arıza Açıklaması</label>
@@ -219,4 +249,3 @@ export default function NewServiceRequestPage() {
         </div>
     );
 }
-

@@ -10,7 +10,8 @@ import {
     ArrowLeft,
     Clock,
     CheckCircle2,
-    PlayCircle
+    PlayCircle,
+    Smartphone
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -18,6 +19,8 @@ import { useRouter } from 'next/navigation';
 interface ServiceRequest {
     id: string;
     description: string;
+    deviceBrand?: string;
+    deviceModel?: string;
     status: 'NEW' | 'IN_PROGRESS' | 'COMPLETED';
     createdAt: string;
     customer: {
@@ -43,7 +46,9 @@ export default function ServiceRequestsPage() {
 
     const filtered = requests.filter(r =>
         r.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        r.customer.name.toLowerCase().includes(searchTerm.toLowerCase())
+        r.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        r.deviceBrand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        r.deviceModel?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const getStatusStyle = (status: string) => {
@@ -106,7 +111,7 @@ export default function ServiceRequestsPage() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                 <input
                     type="text"
-                    placeholder="Müşteri adı veya arıza..."
+                    placeholder="Müşteri adı, marka veya arıza..."
                     className="w-full h-14 bg-white border border-slate-100 rounded-2xl pl-12 pr-4 text-sm font-medium focus:border-blue-500 outline-none shadow-sm transition-all"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -132,9 +137,17 @@ export default function ServiceRequestsPage() {
                         >
                             <div className="flex items-start justify-between mb-4">
                                 <div className="space-y-1">
-                                    <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${getStatusStyle(request.status)}`}>
-                                        {getStatusIcon(request.status)}
-                                        {getStatusLabel(request.status)}
+                                    <div className="flex items-center gap-2">
+                                        <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${getStatusStyle(request.status)}`}>
+                                            {getStatusIcon(request.status)}
+                                            {getStatusLabel(request.status)}
+                                        </div>
+                                        {(request.deviceBrand || request.deviceModel) && (
+                                            <div className="flex items-center gap-1 text-[10px] font-bold text-slate-500 uppercase tracking-tight bg-slate-50 px-2 py-1 rounded-full border border-slate-100">
+                                                <Smartphone size={10} />
+                                                <span>{request.deviceBrand} {request.deviceModel}</span>
+                                            </div>
+                                        )}
                                     </div>
                                     <h3 className="font-black text-slate-900 uppercase tracking-tight line-clamp-2 mt-2">{request.description}</h3>
                                 </div>
@@ -154,3 +167,4 @@ export default function ServiceRequestsPage() {
         </div>
     );
 }
+stone

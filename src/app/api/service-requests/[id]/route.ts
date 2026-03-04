@@ -30,13 +30,15 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
     try {
         const body = await req.json();
-        const { status, description, notes } = body;
+        const { status, description, notes, deviceBrand, deviceModel } = body;
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updateData: any = {};
         if (status) updateData.status = status;
         if (description !== undefined) updateData.description = description;
         if (notes !== undefined) updateData.notes = notes;
+        if (deviceBrand !== undefined) updateData.deviceBrand = deviceBrand;
+        if (deviceModel !== undefined) updateData.deviceModel = deviceModel;
 
         const serviceRequest = await prisma.serviceRequest.update({
             where: {
@@ -76,3 +78,4 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
         return NextResponse.json({ error: "Failed to delete service request" }, { status: 500 });
     }
 }
+Stone
