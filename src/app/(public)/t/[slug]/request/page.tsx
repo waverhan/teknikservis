@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import PublicRequestForm from "@/components/PublicRequestForm";
-import { Phone, MapPin, ExternalLink, Globe, Star, ChevronLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from 'next/link';
 
 export const dynamic = "force-dynamic";
@@ -83,4 +83,3 @@ export default async function RequestPage({ params }: RequestPageProps) {
         </div>
     );
 }
-stone
