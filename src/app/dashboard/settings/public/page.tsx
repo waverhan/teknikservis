@@ -125,7 +125,7 @@ export default function PublicSettingsPage() {
 
                 <div className="flex flex-col gap-1 relative z-10">
                     <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-400">Canlı Yayın Adresi</span>
-                    <p className="text-lg font-black tracking-tight italic">{business.slug}.teknikservis.com</p>
+                    <p className="text-lg font-black tracking-tight italic">{business.slug}.teknikservis.info</p>
                 </div>
                 <a
                     href={`/b/${business.slug}`}

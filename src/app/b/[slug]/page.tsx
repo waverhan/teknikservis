@@ -161,7 +161,7 @@ export default async function PublicBusinessPage({
             <footer className="mt-12 flex flex-col items-center gap-4 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-500">
                 <div className="flex items-center gap-2">
                     <p className="text-[10px] font-bold uppercase tracking-widest">Powered by</p>
-                    <span className="text-xs font-black text-blue-600 tracking-tighter uppercase italic">ServiceFlow</span>
+                    <span className="text-xs font-black text-blue-600 tracking-tighter uppercase italic">Teknik Servis</span>
                 </div>
             </footer>
         </div>

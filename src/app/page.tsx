@@ -255,7 +255,7 @@ export default function LandingPage() {
               <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-[0.3em]">İletişim</h4>
               <ul className="space-y-4">
                 <li className="flex items-center gap-3 text-sm font-bold text-slate-600 uppercase tracking-tight">
-                  <Mail size={16} className="text-blue-500" /> info@teknikservis.com
+                  <Mail size={16} className="text-blue-500" /> info@teknikservis.info
                 </li>
                 <li className="flex items-center gap-3 text-sm font-bold text-slate-600 uppercase tracking-tight">
                   <Phone size={16} className="text-blue-500" /> 0850 300 00 00
