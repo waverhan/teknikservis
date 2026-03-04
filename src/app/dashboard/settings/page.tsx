@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { LogOut, Globe, ChevronRight, User, Shield, Bell } from 'lucide-react';
+import { LogOut, Globe, ChevronRight } from 'lucide-react';
 
 export default function SettingsPage() {
     const router = useRouter();
