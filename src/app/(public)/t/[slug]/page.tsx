@@ -1,117 +1,170 @@
-import { getTenantBySlug } from "@/lib/tenant";
+import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
-
-export const dynamic = 'force-dynamic';
 import Image from "next/image";
-import {
-    Phone,
-    MapPin,
-    MessageCircle,
-    ShieldCheck,
-    Clock,
-    ArrowRight,
-    Globe
-} from 'lucide-react';
-import Link from 'next/link';
+import PublicRequestForm from "@/components/PublicRequestForm";
+import { Phone, MapPin, ExternalLink, Globe, Star } from "lucide-react";
+
+export const dynamic = "force-dynamic";
 
 interface TenantPageProps {
     params: { slug: string };
 }
 
 export default async function TenantPage({ params }: TenantPageProps) {
-    const tenant = await getTenantBySlug(params.slug);
+    const business = await prisma.business.findUnique({
+        where: { slug: params.slug },
+        select: {
+            id: true,
+            name: true,
+            logo: true,
+            address: true,
+            phone: true,
+            slug: true,
+            primaryColor: true,
+            publicDescription: true,
+            googleMapsUrl: true,
+            isPublic: true,
+        },
+    });
 
-    if (!tenant || !tenant.isPublic) {
+    if (!business || !business.isPublic) {
         notFound();
     }
 
-    const primaryColor = tenant.primaryColor || "#3B82F6";
+    const primaryColor = business.primaryColor || "#3B82F6";
 
     return (
-        <div className="flex flex-col min-h-screen">
-            {/* Hero Section */}
-            <section className="relative pt-16 pb-12 px-8 overflow-hidden">
-                {/* Background Blur */}
+        <div className="min-h-screen bg-slate-50 flex flex-col items-center p-4 py-12 md:py-20 font-sans">
+            <div className="w-full max-w-2xl bg-white rounded-[3rem] shadow-[0_32px_80px_-20px_rgba(0,0,0,0.1)] overflow-hidden border border-slate-100 flex flex-col">
+
+                {/* Header Section */}
                 <div
-                    className="absolute -top-24 -right-24 w-64 h-64 blur-[120px] rounded-full opacity-20"
+                    className="p-10 md:p-14 text-center text-white relative transition-all duration-1000"
                     style={{ backgroundColor: primaryColor }}
-                />
-
-                <div className="flex flex-col items-center text-center relative z-10">
-                    <div className="w-24 h-24 rounded-3xl bg-slate-100 flex items-center justify-center p-4 mb-6 shadow-xl shadow-slate-200/50 border border-white">
-                        {tenant.logo ? (
-                            <Image src={tenant.logo} alt={tenant.name} width={80} height={80} className="object-contain" />
-                        ) : (
-                            <ShieldCheck size={40} className="text-slate-400" />
-                        )}
+                >
+                    {/* Decorative Elements */}
+                    <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                        <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                            <circle cx="10" cy="10" r="30" fill="white" />
+                            <circle cx="90" cy="80" r="20" fill="white" />
+                        </svg>
                     </div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase leading-tight mb-2">
-                        {tenant.name}
-                    </h1>
-                    <p className="text-[11px] font-black uppercase text-slate-400 tracking-[0.3em] mb-4 flex items-center gap-2">
-                        <Globe size={11} /> Yetkili Servis Merkezi
-                    </p>
 
-                    <div className="max-w-xs mx-auto mb-10">
-                        <p className="text-sm text-slate-500 font-medium leading-relaxed italic">
-                            &quot;{tenant.publicDescription || 'Sizin için buradayız. Hizmet kalitesinden ödün vermeden güvenilir teknik servis sunmaktayız.'}&quot;
+                    <div className="relative z-10 flex flex-col items-center">
+                        <div className="group relative">
+                            <div className="absolute -inset-2 bg-white/20 rounded-[2.5rem] blur-xl group-hover:blur-2xl transition-all" />
+                            {business.logo ? (
+                                <Image
+                                    src={business.logo}
+                                    alt={business.name}
+                                    width={100}
+                                    height={100}
+                                    className="w-24 h-24 rounded-3xl bg-white p-3 shadow-2xl mb-6 object-contain relative z-10 transition-transform group-hover:scale-105"
+                                />
+                            ) : (
+                                <div className="w-24 h-24 rounded-3xl bg-white/10 backdrop-blur-xl flex items-center justify-center text-4xl font-black mb-6 border border-white/30 shadow-2xl relative z-10 uppercase italic">
+                                    {business.name.substring(0, 1)}
+                                </div>
+                            )}
+                        </div>
+
+                        <h1 className="text-3xl md:text-4xl font-black tracking-tighter leading-none uppercase italic">{business.name}</h1>
+                        <div className="mt-4 inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+                            <Star size={14} className="fill-white" />
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Resmi Teknik Servis</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* About Section (New) */}
+                {business.publicDescription && (
+                    <div className="p-10 md:p-14 bg-slate-50/50 border-b border-slate-100 text-center">
+                        <p className="text-lg md:text-xl font-bold text-slate-700 leading-relaxed italic">
+                            &quot;{business.publicDescription}&quot;
                         </p>
                     </div>
+                )}
 
-                    <div className="w-full flex flex-col gap-3">
-                        <Link
-                            href={`/t/${params.slug}/request`}
-                            className="w-full py-5 rounded-[2rem] text-white font-black text-sm uppercase tracking-wider flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-blue-500/20 bg-tenant"
-                        >
-                            Hizmet Talebi Oluştur
-                            <ArrowRight size={18} />
-                        </Link>
+                {/* Main Content: Form */}
+                <div className="p-10 md:p-14 space-y-12">
+                    <div className="space-y-4 text-center">
+                        <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight italic">Servis Kaydı Oluştur</h2>
+                        <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Arızalı cihazınız için hızlıca talep bırakın</p>
+                    </div>
 
-                        <a
-                            href={`https://wa.me/${tenant.phone}`}
-                            className="w-full py-5 rounded-[2rem] bg-emerald-50 text-emerald-600 font-black text-sm uppercase tracking-wider flex items-center justify-center gap-3 border border-emerald-100 transition-all hover:bg-emerald-100"
-                        >
-                            <MessageCircle size={20} fill="currentColor" className="text-emerald-50" />
-                            WhatsApp ile Ulaşın
-                        </a>
-                    </div>
-                </div>
-            </section>
-
-            {/* Info Cards */}
-            <section className="px-8 pb-12 grid grid-cols-1 gap-4">
-                <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 flex items-start gap-5 group">
-                    <div className="p-4 bg-white rounded-[1.5rem] text-slate-900 shadow-sm shadow-slate-200/50">
-                        <Phone size={20} className="text-tenant" />
-                    </div>
-                    <div className="flex flex-col gap-1 px-1">
-                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest mt-1">İletişim Hattı</span>
-                        <p className="text-sm font-black text-slate-900 leading-tight tracking-tight uppercase pt-0.5">{tenant.phone || 'Girilmemiş'}</p>
-                    </div>
+                    <PublicRequestForm slug={business.slug} />
                 </div>
 
-                <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 flex items-start gap-5 group">
-                    <div className="p-4 bg-white rounded-[1.5rem] text-slate-900 shadow-sm shadow-slate-200/50">
-                        <MapPin size={20} className="text-tenant" />
+                {/* Contact & Maps Section */}
+                <div className="border-t border-slate-50 bg-white p-10 md:p-14 grid md:grid-cols-1 lg:grid-cols-2 gap-10">
+                    <div className="space-y-6">
+                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest border-l-4 pl-4" style={{ borderColor: primaryColor }}>İLETİŞİM</h3>
+                        <div className="space-y-4">
+                            {business.phone && (
+                                <a href={`tel:${business.phone}`} className="flex items-center gap-4 group">
+                                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-blue-600 transition-colors">
+                                        <Phone size={18} />
+                                    </div>
+                                    <span className="text-sm font-bold text-slate-600 group-hover:text-slate-900 transition-all">{business.phone}</span>
+                                </a>
+                            )}
+                            {business.address && (
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 mt-1">
+                                        <MapPin size={18} />
+                                    </div>
+                                    <span className="text-sm font-medium text-slate-500 leading-relaxed">{business.address}</span>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                    <div className="flex flex-col gap-1 px-1">
-                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest mt-1">Hizmet Adresi</span>
-                        <p className="text-sm font-black text-slate-900 leading-tight tracking-tight uppercase pt-0.5">{tenant.address || 'Girilmemiş'}</p>
-                    </div>
-                </div>
 
-                <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 flex items-start gap-5 group">
-                    <div className="p-4 bg-white rounded-[1.5rem] text-slate-900 shadow-sm shadow-slate-200/50">
-                        <Clock size={20} className="text-tenant" />
-                    </div>
-                    <div className="flex flex-col gap-1 px-1">
-                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest mt-1">Çalışma Saatleri</span>
-                        <p className="text-sm font-black text-slate-900 leading-tight tracking-tight uppercase pt-0.5">PZT - CMT | 09:00 - 18:00</p>
-                    </div>
+                    {(business.address || business.googleMapsUrl) && (
+                        <div className="space-y-6">
+                            <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest border-l-4 pl-4" style={{ borderColor: primaryColor }}>KONUM</h3>
+                            <div className="aspect-square bg-slate-100 rounded-[2rem] overflow-hidden border border-slate-100 shadow-inner relative group">
+                                {business.address ? (
+                                    <iframe
+                                        width="100%"
+                                        height="100%"
+                                        frameBorder="0"
+                                        style={{ border: 0 }}
+                                        src={`https://maps.google.com/maps?q=${encodeURIComponent(business.address)}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+                                        allowFullScreen
+                                    ></iframe>
+                                ) : (
+                                    <a
+                                        href={business.googleMapsUrl || '#'}
+                                        target="_blank"
+                                        className="w-full h-full flex flex-col items-center justify-center text-center p-6 transition-all hover:bg-slate-200"
+                                    >
+                                        <Globe size={48} className="text-slate-400 mb-2" />
+                                        <p className="text-[10px] font-black uppercase tracking-widest">Haritayı Google&apos;da Aç</p>
+                                    </a>
+                                )}
+                            </div>
+                            {business.googleMapsUrl && (
+                                <a
+                                    href={business.googleMapsUrl}
+                                    target="_blank"
+                                    className="flex items-center justify-center gap-2 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 transition-all"
+                                >
+                                    <span>Tam Haritada Görüntüle</span>
+                                    <ExternalLink size={12} />
+                                </a>
+                            )}
+                        </div>
+                    )}
                 </div>
-            </section>
+            </div>
 
-            {/* Footer is provided by the layout, but we can add some closing sections here */}
+            {/* Footer */}
+            <footer className="mt-12 flex flex-col items-center gap-4 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-500">
+                <div className="flex items-center gap-2">
+                    <p className="text-[10px] font-bold uppercase tracking-widest">Powered by</p>
+                    <span className="text-xs font-black text-blue-600 tracking-tighter uppercase italic">Teknik Servis</span>
+                </div>
+            </footer>
         </div>
     );
 }
