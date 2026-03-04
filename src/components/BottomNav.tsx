@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Users, ClipboardList, Settings, ReceiptText } from 'lucide-react';
+import { Home, Users, ClipboardList, Settings, ReceiptText, Wrench } from 'lucide-react';
 
 const BottomNav = () => {
     const pathname = usePathname();
 
     const navItems = [
         { label: 'Ana Sayfa', icon: Home, href: '/dashboard' },
+        { label: 'Hizmetler', icon: Wrench, href: '/dashboard/services' },
         { label: 'Müşteriler', icon: Users, href: '/dashboard/customers' },
         { label: 'İş Emirleri', icon: ClipboardList, href: '/dashboard/service-requests' },
         { label: 'Makbuzlar', icon: ReceiptText, href: '/dashboard/receipts' },

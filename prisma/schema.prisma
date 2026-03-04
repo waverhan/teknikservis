@@ -36,6 +36,8 @@ model Business {
   customers         Customer[]
   serviceRequests   ServiceRequest[]
   receipts          Receipt[]
+  services          OfferedService[]
+  reviews           Review[]
 }
 
 model Customer {
@@ -81,6 +83,32 @@ model Receipt {
   serviceRequest   ServiceRequest @relation(fields: [serviceRequestId], references: [id])
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
+
+  @@index([businessId])
+}
+
+model OfferedService {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Decimal? @db.Decimal(10, 2)
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([businessId])
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  rating      Int      // 1-5
+  comment     String?
+  customerName String
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([businessId])
 }

@@ -5,6 +5,9 @@ import PublicRequestForm from "@/components/PublicRequestForm";
 import { Phone, MapPin, ExternalLink, Globe, Star, MessageCircle } from "lucide-react";
 import ShareButton from "@/components/ShareButton";
 
+import PublicServicesSection from "@/components/PublicServicesSection";
+import PublicReviewSection from "@/components/PublicReviewSection";
+
 export const dynamic = "force-dynamic";
 
 interface TenantPageProps {
@@ -25,6 +28,12 @@ export default async function TenantPage({ params }: TenantPageProps) {
             publicDescription: true,
             googleMapsUrl: true,
             isPublic: true,
+            services: {
+                orderBy: { createdAt: "desc" }
+            },
+            reviews: {
+                orderBy: { createdAt: "desc" }
+            }
         },
     });
 
@@ -92,6 +101,12 @@ export default async function TenantPage({ params }: TenantPageProps) {
                     </div>
                 )}
 
+                {/* Services Section */}
+                <PublicServicesSection
+                    services={business.services}
+                    primaryColor={primaryColor}
+                />
+
                 {/* Main Content: Form */}
                 <div className="p-10 md:p-14 space-y-12">
                     <div className="space-y-4 text-center">
@@ -115,6 +130,13 @@ export default async function TenantPage({ params }: TenantPageProps) {
                         </div>
                     )}
                 </div>
+
+                {/* Reviews Section */}
+                <PublicReviewSection
+                    businessId={business.id}
+                    initialReviews={business.reviews}
+                    primaryColor={primaryColor}
+                />
 
                 {/* Contact & Maps Section */}
                 <div className="border-t border-slate-50 bg-white p-10 md:p-14 grid md:grid-cols-2 gap-10">
