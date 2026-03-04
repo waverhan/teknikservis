@@ -118,26 +118,40 @@ export default async function PublicBusinessPage({
                         </div>
                     </div>
 
-                    {business.googleMapsUrl && (
+                    {(business.address || business.googleMapsUrl) && (
                         <div className="space-y-6">
                             <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest border-l-4 pl-4" style={{ borderColor: primaryColor }}>KONUM</h3>
-                            <a
-                                href={business.googleMapsUrl}
-                                target="_blank"
-                                className="block aspect-video bg-slate-100 rounded-[2rem] overflow-hidden relative group"
-                            >
-                                <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center z-10">
-                                    <div className="px-6 py-3 bg-white text-slate-900 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 shadow-2xl translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                                        <span>YOL TARİFİ AL</span>
-                                        <ExternalLink size={14} />
-                                    </div>
-                                </div>
-                                {/* Placeholder for actual map or static image if we had one */}
-                                <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 opacity-40 group-hover:scale-110 transition-transform duration-700">
-                                    <Globe size={48} className="text-slate-400 mb-2" />
-                                    <p className="text-[10px] font-black uppercase tracking-widest">Haritayı Google&apos;da Aç</p>
-                                </div>
-                            </a>
+                            <div className="aspect-square md:aspect-video bg-slate-100 rounded-[2rem] overflow-hidden border border-slate-100 shadow-inner relative group">
+                                {business.address ? (
+                                    <iframe
+                                        width="100%"
+                                        height="100%"
+                                        frameBorder="0"
+                                        style={{ border: 0 }}
+                                        src={`https://maps.google.com/maps?q=${encodeURIComponent(business.address)}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+                                        allowFullScreen
+                                    ></iframe>
+                                ) : (
+                                    <a
+                                        href={business.googleMapsUrl || '#'}
+                                        target="_blank"
+                                        className="w-full h-full flex flex-col items-center justify-center text-center p-6 transition-all hover:bg-slate-200"
+                                    >
+                                        <Globe size={48} className="text-slate-400 mb-2" />
+                                        <p className="text-[10px] font-black uppercase tracking-widest">Haritayı Google&apos;da Aç</p>
+                                    </a>
+                                )}
+                            </div>
+                            {business.googleMapsUrl && (
+                                <a
+                                    href={business.googleMapsUrl}
+                                    target="_blank"
+                                    className="flex items-center justify-center gap-2 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 transition-all"
+                                >
+                                    <span>Tam Haritada Görüntüle</span>
+                                    <ExternalLink size={12} />
+                                </a>
+                            )}
                         </div>
                     )}
                 </div>
