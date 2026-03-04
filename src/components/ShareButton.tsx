@@ -1,6 +1,6 @@
 'use client';
 
-import { Share2, Check, Copy } from 'lucide-react';
+import { Share2 } from 'lucide-react';
 import { useState } from 'react';
 
 export default function ShareButton({ url, title }: { url: string; title: string }) {
