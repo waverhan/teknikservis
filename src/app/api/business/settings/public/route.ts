@@ -13,7 +13,16 @@ export async function POST(request: Request) {
 
     try {
         const body = await request.json();
-        const { primaryColor, publicDescription, isPublic } = body;
+        const {
+            primaryColor,
+            publicDescription,
+            isPublic,
+            logo,
+            coverImage,
+            phone,
+            address,
+            googleMapsUrl
+        } = body;
 
         const updatedBusiness = await prisma.business.update({
             where: {
@@ -22,6 +31,11 @@ export async function POST(request: Request) {
             data: {
                 primaryColor,
                 publicDescription,
+                logo,
+                coverImage,
+                phone,
+                address,
+                googleMapsUrl,
                 isPublic: Boolean(isPublic),
             },
         });

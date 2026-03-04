@@ -30,6 +30,7 @@ model Business {
   primaryColor     String?          @default("#3B82F6")
   coverImage       String?
   publicDescription String?
+  googleMapsUrl     String?
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
   customers         Customer[]

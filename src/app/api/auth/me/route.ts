@@ -25,6 +25,8 @@ export async function GET() {
                 publicDescription: true,
                 isPublic: true,
                 customDomain: true,
+                googleMapsUrl: true,
+                coverImage: true,
             }
         });
 

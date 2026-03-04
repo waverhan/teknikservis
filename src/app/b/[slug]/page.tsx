@@ -1,9 +1,10 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
-
-export const dynamic = "force-dynamic";
 import Image from "next/image";
 import PublicRequestForm from "@/components/PublicRequestForm";
+import { Phone, MapPin, ExternalLink, Globe, Star } from "lucide-react";
+
+export const dynamic = "force-dynamic";
 
 export default async function PublicBusinessPage({
     params,
@@ -19,6 +20,9 @@ export default async function PublicBusinessPage({
             address: true,
             phone: true,
             slug: true,
+            primaryColor: true,
+            publicDescription: true,
+            googleMapsUrl: true,
         },
     });
 
@@ -26,52 +30,126 @@ export default async function PublicBusinessPage({
         notFound();
     }
 
+    const primaryColor = business.primaryColor || "#3B82F6";
+
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col items-center p-4 py-8">
-            <div className="w-full max-w-md bg-white rounded-[2.5rem] shadow-xl shadow-slate-200 overflow-hidden border border-slate-100 mb-8">
-                {/* Business Header */}
-                <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-8 text-center text-white relative">
-                    <div className="absolute top-0 right-0 p-4 opacity-10">
-                        <svg width="120" height="120" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z" />
+        <div className="min-h-screen bg-slate-50 flex flex-col items-center p-4 py-12 md:py-20 font-sans">
+            <div className="w-full max-w-2xl bg-white rounded-[3rem] shadow-[0_32px_80px_-20px_rgba(0,0,0,0.1)] overflow-hidden border border-slate-100 flex flex-col">
+
+                {/* Header Section */}
+                <div
+                    className="p-10 md:p-14 text-center text-white relative transition-all duration-1000"
+                    style={{ backgroundColor: primaryColor }}
+                >
+                    {/* Decorative Elements */}
+                    <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                        <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                            <circle cx="10" cy="10" r="30" fill="white" />
+                            <circle cx="90" cy="80" r="20" fill="white" />
                         </svg>
                     </div>
 
                     <div className="relative z-10 flex flex-col items-center">
-                        {business.logo ? (
-                            <Image
-                                src={business.logo}
-                                alt={business.name}
-                                width={80}
-                                height={80}
-                                className="w-20 h-20 rounded-3xl bg-white p-2 shadow-lg mb-4 object-contain"
-                            />
-                        ) : (
-                            <div className="w-20 h-20 rounded-3xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl font-bold mb-4 border border-white/30 shadow-lg">
-                                {business.name.substring(0, 1).toUpperCase()}
-                            </div>
-                        )}
-                        <h1 className="text-2xl font-black tracking-tight leading-tight">{business.name}</h1>
-                        <p className="text-blue-100 text-sm font-medium mt-1 opacity-90">Teknik Servis Başvuru Formu</p>
+                        <div className="group relative">
+                            <div className="absolute -inset-2 bg-white/20 rounded-[2.5rem] blur-xl group-hover:blur-2xl transition-all" />
+                            {business.logo ? (
+                                <Image
+                                    src={business.logo}
+                                    alt={business.name}
+                                    width={100}
+                                    height={100}
+                                    className="w-24 h-24 rounded-3xl bg-white p-3 shadow-2xl mb-6 object-contain relative z-10 transition-transform group-hover:scale-105"
+                                />
+                            ) : (
+                                <div className="w-24 h-24 rounded-3xl bg-white/10 backdrop-blur-xl flex items-center justify-center text-4xl font-black mb-6 border border-white/30 shadow-2xl relative z-10 uppercase italic">
+                                    {business.name.substring(0, 1)}
+                                </div>
+                            )}
+                        </div>
+
+                        <h1 className="text-3xl md:text-4xl font-black tracking-tighter leading-none uppercase italic">{business.name}</h1>
+                        <div className="mt-4 inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+                            <Star size={14} className="fill-white" />
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Resmi Teknik Servis</span>
+                        </div>
                     </div>
                 </div>
 
-                {/* Form Section */}
-                <div className="p-8">
+                {/* About Section (New) */}
+                {business.publicDescription && (
+                    <div className="p-10 md:p-14 bg-slate-50/50 border-b border-slate-100 text-center">
+                        <p className="text-lg md:text-xl font-bold text-slate-700 leading-relaxed italic">
+                            &quot;{business.publicDescription}&quot;
+                        </p>
+                    </div>
+                )}
+
+                {/* Main Content: Form */}
+                <div className="p-10 md:p-14 space-y-12">
+                    <div className="space-y-4 text-center">
+                        <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight italic">Servis Kaydı Oluştur</h2>
+                        <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Arızalı cihazınız için hızlıca talep bırakın</p>
+                    </div>
+
                     <PublicRequestForm slug={business.slug} />
+                </div>
+
+                {/* Contact & Maps Section */}
+                <div className="border-t border-slate-50 bg-white p-10 md:p-14 grid md:grid-cols-2 gap-10">
+                    <div className="space-y-6">
+                        <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest border-l-4 pl-4" style={{ borderColor: primaryColor }}>İLETİŞİM</h3>
+                        <div className="space-y-4">
+                            {business.phone && (
+                                <a href={`tel:${business.phone}`} className="flex items-center gap-4 group">
+                                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-blue-600 transition-colors">
+                                        <Phone size={18} />
+                                    </div>
+                                    <span className="text-sm font-bold text-slate-600 group-hover:text-slate-900 transition-all">{business.phone}</span>
+                                </a>
+                            )}
+                            {business.address && (
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 mt-1">
+                                        <MapPin size={18} />
+                                    </div>
+                                    <span className="text-sm font-medium text-slate-500 leading-relaxed">{business.address}</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {business.googleMapsUrl && (
+                        <div className="space-y-6">
+                            <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest border-l-4 pl-4" style={{ borderColor: primaryColor }}>KONUM</h3>
+                            <a
+                                href={business.googleMapsUrl}
+                                target="_blank"
+                                className="block aspect-video bg-slate-100 rounded-[2rem] overflow-hidden relative group"
+                            >
+                                <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center z-10">
+                                    <div className="px-6 py-3 bg-white text-slate-900 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-2 shadow-2xl translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                                        <span>YOL TARİFİ AL</span>
+                                        <ExternalLink size={14} />
+                                    </div>
+                                </div>
+                                {/* Placeholder for actual map or static image if we had one */}
+                                <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 opacity-40 group-hover:scale-110 transition-transform duration-700">
+                                    <Globe size={48} className="text-slate-400 mb-2" />
+                                    <p className="text-[10px] font-black uppercase tracking-widest">Haritayı Google&apos;da Aç</p>
+                                </div>
+                            </a>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            {/* Footer Info */}
-            <div className="text-center text-slate-400 space-y-2 max-w-xs">
-                <p className="text-[10px] font-bold uppercase tracking-widest">İletişim Bilgileri</p>
-                {business.phone && <p className="text-sm font-medium">{business.phone}</p>}
-                {business.address && <p className="text-xs">{business.address}</p>}
-                <div className="pt-4 flex flex-col items-center opacity-50">
-                    <p className="text-[10px] font-medium">Powered by</p>
-                    <p className="text-[11px] font-black text-blue-600 tracking-tighter uppercase italic">ServiceFlow</p>
+            {/* Footer */}
+            <footer className="mt-12 flex flex-col items-center gap-4 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-500">
+                <div className="flex items-center gap-2">
+                    <p className="text-[10px] font-bold uppercase tracking-widest">Powered by</p>
+                    <span className="text-xs font-black text-blue-600 tracking-tighter uppercase italic">ServiceFlow</span>
                 </div>
-            </div>
+            </footer>
         </div>
     );
 }
