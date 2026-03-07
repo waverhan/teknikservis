@@ -20,7 +20,15 @@ export async function GET() {
                     select: {
                         id: true,
                         name: true,
-                        slug: true
+                        slug: true,
+                        phone: true,
+                        address: true,
+                        logo: true,
+                        isPublic: true,
+                        primaryColor: true,
+                        coverImage: true,
+                        publicDescription: true,
+                        googleMapsUrl: true
                     }
                 }
             }
