@@ -239,7 +239,7 @@ export default function ServiceRequestDetailPage() {
                             </div>
                             <div className="pt-2 border-t border-slate-100 flex justify-between items-end">
                                 <div>
-                                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">KDV (%20) DAHİL</p>
+                                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">KDV (%20)</p>
                                     <p className="text-xs font-black text-slate-500 italic">
                                         Matrah: {(request.actions.reduce((acc, a) => acc + Number(a.price), 0) / 1.20).toLocaleString('tr-TR')} TL
                                     </p>
@@ -335,7 +335,7 @@ export default function ServiceRequestDetailPage() {
                                                 <span>{(request.actions.reduce((acc, a) => acc + Number(a.price), 0) / 1.20).toLocaleString('tr-TR')} TL</span>
                                             </div>
                                             <div className="flex justify-between text-[10px] font-bold text-blue-400">
-                                                <span>KDV DAHİL (%20):</span>
+                                                <span>KDV (%20):</span>
                                                 <span>{(request.actions.reduce((acc, a) => acc + Number(a.price), 0) - (request.actions.reduce((acc, a) => acc + Number(a.price), 0) / 1.20)).toLocaleString('tr-TR')} TL</span>
                                             </div>
                                             <div className="flex justify-between text-xs font-black text-blue-600 border-t border-blue-100 pt-2">

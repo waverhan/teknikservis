@@ -59,7 +59,7 @@ export default function PrintReceipt({ business, customer, serviceRequest, recei
                 value: `${Number(a.price).toLocaleString('tr-TR')} TL`
             }));
 
-            const publicUrl = `teknikservis.com/t/${business.slug}`;
+            const publicUrl = `${business.slug}.teknikservis.com`;
 
             const jobData = BluetoothService.prepareReceiptJob({
                 title: business.name,
@@ -71,7 +71,7 @@ export default function PrintReceipt({ business, customer, serviceRequest, recei
                     ...actionDetails,
                     { label: '-', value: '-' },
                     { label: 'MATRAH', value: `${subtotal.toLocaleString('tr-TR')} TL` },
-                    { label: 'KDV DAHIL', value: `${kdv.toLocaleString('tr-TR')} TL` },
+                    { label: 'KDV (%20)', value: `${kdv.toLocaleString('tr-TR')} TL` },
                 ],
                 totalTitle: 'GENEL TOPLAM',
                 totalValue: `${total.toLocaleString('tr-TR')} TL`,
@@ -110,7 +110,7 @@ export default function PrintReceipt({ business, customer, serviceRequest, recei
                             <p className="font-black text-[10px] uppercase mb-1 leading-tight">{business.name}</p>
                             {business.address && <p className="opacity-60 text-[7px]">{business.address}</p>}
                             {business.phone && <p className="opacity-60 text-[7px]">Tel: {business.phone}</p>}
-                            <p className="text-blue-600 text-[7px] font-bold mt-1">teknikservis.com/t/{business.slug}</p>
+                            <p className="text-blue-600 text-[7px] font-bold mt-1">{business.slug}.teknikservis.com</p>
                         </div>
 
                         <div className="space-y-1 mb-4">
@@ -148,7 +148,7 @@ export default function PrintReceipt({ business, customer, serviceRequest, recei
                                         <span>{(serviceRequest.actions.reduce((acc, a) => acc + Number(a.price), 0) / 1.20).toLocaleString('tr-TR')} TL</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span>KDV DAHİL (%20):</span>
+                                        <span>KDV (%20):</span>
                                         <span>{(serviceRequest.actions.reduce((acc, a) => acc + Number(a.price), 0) - (serviceRequest.actions.reduce((acc, a) => acc + Number(a.price), 0) / 1.20)).toLocaleString('tr-TR')} TL</span>
                                     </div>
                                 </>
