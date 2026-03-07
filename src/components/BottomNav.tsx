@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Users, ClipboardList, Settings, ReceiptText, Wrench } from 'lucide-react';
+import { Home, Users, ClipboardList, Settings, ReceiptText } from 'lucide-react';
 
 const BottomNav = () => {
     const pathname = usePathname();
