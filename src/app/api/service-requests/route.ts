@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     try {
-        const { customerId, description, notes, deviceBrand, deviceModel } = await req.json();
+        const { customerId, description, notes, deviceBrand, deviceModel, actions } = await req.json();
 
         if (!customerId || !description) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -39,8 +39,14 @@ export async function POST(req: Request) {
                 deviceBrand,
                 deviceModel,
                 businessId: session.businessId,
+                actions: actions ? {
+                    create: actions.map((a: any) => ({
+                        description: a.description,
+                        price: parseFloat(a.price) || 0
+                    }))
+                } : undefined
             },
-            include: { customer: true },
+            include: { customer: true, actions: true },
         });
 
         return NextResponse.json(serviceRequest);

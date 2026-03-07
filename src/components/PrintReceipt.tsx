@@ -18,6 +18,7 @@ interface PrintReceiptProps {
         id: string;
         description: string;
         createdAt: Date | string;
+        actions?: { description: string; price: number | string }[];
     };
     receipt: {
         price: number | string;
@@ -46,6 +47,17 @@ export default function PrintReceipt({ business, customer, serviceRequest, recei
         try {
             const dateStr = new Date(serviceRequest.createdAt).toLocaleDateString('tr-TR');
 
+            const subtotal = serviceRequest.actions && serviceRequest.actions.length > 0
+                ? serviceRequest.actions.reduce((acc, a) => acc + Number(a.price), 0)
+                : Number(receipt.price);
+            const kdv = subtotal * 0.20;
+            const total = subtotal + kdv;
+
+            const actionDetails = (serviceRequest.actions || []).map((a, i) => ({
+                label: `${i + 1}-${a.description}`,
+                value: `${Number(a.price).toLocaleString('tr-TR')} TL`
+            }));
+
             const jobData = BluetoothService.prepareReceiptJob({
                 title: business.name,
                 details: [
@@ -53,10 +65,13 @@ export default function PrintReceipt({ business, customer, serviceRequest, recei
                     { label: 'Fiş No', value: serviceRequest.id.substring(0, 8).toUpperCase() },
                     { label: 'Müşteri', value: customer.name },
                     { label: 'Telefon', value: customer.phone },
-                    { label: 'Hizmet', value: serviceRequest.description },
+                    ...actionDetails,
+                    { label: '-', value: '-' }, // Divider
+                    { label: 'ARA TOPLAM', value: `${subtotal.toLocaleString('tr-TR')} TL` },
+                    { label: 'KDV (%20)', value: `${kdv.toLocaleString('tr-TR')} TL` },
                 ],
-                totalTitle: 'TOPLAM',
-                totalValue: `${Number(receipt.price).toLocaleString('tr-TR')} TL`,
+                totalTitle: 'GENEL TOPLAM',
+                totalValue: `${total.toLocaleString('tr-TR')} TL`,
                 footer: 'Bizi tercih ettiğiniz için teşekkürler!'
             });
 
@@ -103,15 +118,47 @@ export default function PrintReceipt({ business, customer, serviceRequest, recei
                                 <span>Müşteri:</span>
                                 <span className="font-bold">{customer.name}</span>
                             </div>
-                            <div className="flex justify-between">
-                                <span>Hizmet:</span>
-                                <span className="font-bold truncate max-w-[120px]">{serviceRequest.description}</span>
+
+                            <div className="pt-2 mt-2 border-t border-slate-100 space-y-1">
+                                {serviceRequest.actions && serviceRequest.actions.length > 0 ? (
+                                    serviceRequest.actions.map((action, idx) => (
+                                        <div key={idx} className="flex justify-between text-[8px]">
+                                            <span>{idx + 1}-{action.description}</span>
+                                            <span>{Number(action.price).toLocaleString('tr-TR')} TL</span>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="flex justify-between font-bold">
+                                        <span>Hizmet:</span>
+                                        <span className="truncate max-w-[120px]">{serviceRequest.description}</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
-                        <div className="flex justify-between items-center pt-2 border-t-2 border-dashed border-slate-200">
-                            <span className="font-black text-xs uppercase">Toplam</span>
-                            <span className="font-black text-sm">{Number(receipt.price).toLocaleString('tr-TR')} TL</span>
+                        <div className="space-y-1 pt-2 border-t border-slate-100 text-[8px]">
+                            {serviceRequest.actions && serviceRequest.actions.length > 0 && (
+                                <>
+                                    <div className="flex justify-between">
+                                        <span>Ara Toplam:</span>
+                                        <span>{serviceRequest.actions.reduce((acc, a) => acc + Number(a.price), 0).toLocaleString('tr-TR')} TL</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>KDV (%20):</span>
+                                        <span>{(serviceRequest.actions.reduce((acc, a) => acc + Number(a.price), 0) * 0.20).toLocaleString('tr-TR')} TL</span>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+
+                        <div className="flex justify-between items-center pt-2 border-t-2 border-dashed border-slate-200 mt-2">
+                            <span className="font-black text-[10px] uppercase">Genel Toplam</span>
+                            <span className="font-black text-xs">
+                                {serviceRequest.actions && serviceRequest.actions.length > 0
+                                    ? (serviceRequest.actions.reduce((acc, a) => acc + Number(a.price), 0) * 1.20).toLocaleString('tr-TR')
+                                    : Number(receipt.price).toLocaleString('tr-TR')
+                                } TL
+                            </span>
                         </div>
                     </div>
                     <p className="text-[10px] text-center text-slate-400 mt-4 font-bold uppercase tracking-widest italic">Makbuz Önizleme</p>

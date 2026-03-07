@@ -14,7 +14,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
                 id: params.id,
                 businessId: session.businessId,
             },
-            include: { customer: true, receipt: true },
+            include: { customer: true, receipt: true, actions: true },
         });
 
         if (!serviceRequest) return NextResponse.json({ error: "Service request not found" }, { status: 404 });
@@ -30,7 +30,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
     try {
         const body = await req.json();
-        const { status, description, notes, deviceBrand, deviceModel } = body;
+        const { status, description, notes, deviceBrand, deviceModel, actions } = body;
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updateData: any = {};
@@ -40,13 +40,23 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         if (deviceBrand !== undefined) updateData.deviceBrand = deviceBrand;
         if (deviceModel !== undefined) updateData.deviceModel = deviceModel;
 
+        if (actions) {
+            updateData.actions = {
+                deleteMany: {},
+                create: actions.map((a: any) => ({
+                    description: a.description,
+                    price: parseFloat(a.price) || 0
+                }))
+            };
+        }
+
         const serviceRequest = await prisma.serviceRequest.update({
             where: {
                 id: params.id,
                 businessId: session.businessId,
             },
             data: updateData,
-            include: { customer: true, receipt: true },
+            include: { customer: true, receipt: true, actions: true },
         });
 
         return NextResponse.json(serviceRequest);

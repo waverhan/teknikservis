@@ -127,7 +127,10 @@ export default async function DashboardPage() {
                     <h3 className="font-bold text-base mb-1">Müşteri Başvuru Sayfası</h3>
                     <p className="text-xs opacity-90 leading-relaxed mb-4">Müşterilerinize bu adresi göndererek iş emirlerini doğrudan sisteminize girmelerini sağlayın.</p>
                     <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2.2 px-3 text-[10px] font-mono select-all truncate">
-                        {`${process.env.NEXT_PUBLIC_APP_URL}/b/${business?.slug}`}
+                        {process.env.ROOT_DOMAIN
+                            ? `https://${business?.slug}.${process.env.ROOT_DOMAIN}`
+                            : `${process.env.NEXT_PUBLIC_APP_URL}/b/${business?.slug}`
+                        }
                     </div>
                 </div>
                 <div className="absolute -right-4 -bottom-4 opacity-10">

@@ -66,12 +66,25 @@ model ServiceRequest {
   business    Business @relation(fields: [businessId], references: [id])
   customerId  String
   customer    Customer @relation(fields: [customerId], references: [id])
+  actions     ServiceAction[]
   receipt     Receipt?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([businessId])
   @@index([customerId])
+}
+
+model ServiceAction {
+  id               String         @id @default(cuid())
+  description      String
+  price            Decimal        @db.Decimal(10, 2)
+  serviceRequestId String
+  serviceRequest   ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@index([serviceRequestId])
 }
 
 model Receipt {

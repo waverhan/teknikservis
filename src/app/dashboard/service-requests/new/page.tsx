@@ -10,7 +10,8 @@ import {
     Loader2,
     Check,
     Plus,
-    Smartphone
+    Smartphone,
+    Trash2
 } from 'lucide-react';
 
 interface Customer {
@@ -31,7 +32,8 @@ export default function NewServiceRequestPage() {
         deviceBrand: '',
         deviceModel: '',
         description: '',
-        notes: ''
+        notes: '',
+        actions: [] as { description: string; price: string | number }[]
     });
 
     const router = useRouter();
@@ -228,6 +230,64 @@ export default function NewServiceRequestPage() {
                                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                             />
                         </div>
+                    </div>
+
+                    {/* Actions Performed (Toggle/Section) */}
+                    <div className="pt-4 border-t border-slate-100 space-y-4">
+                        <div className="flex items-center justify-between">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Yapılan İşlemler (Opsiyonel)</label>
+                            <button
+                                type="button"
+                                onClick={() => setFormData({
+                                    ...formData,
+                                    actions: [...formData.actions, { description: '', price: '' }]
+                                })}
+                                className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-blue-600 hover:text-white transition-all"
+                            >
+                                + İŞLEM EKLE
+                            </button>
+                        </div>
+
+                        {formData.actions.length > 0 && (
+                            <div className="space-y-3">
+                                {formData.actions.map((action, index) => (
+                                    <div key={index} className="flex gap-2 animate-in slide-in-from-left-2 duration-300">
+                                        <input
+                                            type="text"
+                                            placeholder="İşlem..."
+                                            className="flex-[2] bg-slate-50 border border-slate-100 rounded-xl px-4 h-12 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all"
+                                            value={action.description}
+                                            onChange={(e) => {
+                                                const newActions = [...formData.actions];
+                                                newActions[index].description = e.target.value;
+                                                setFormData({ ...formData, actions: newActions });
+                                            }}
+                                        />
+                                        <input
+                                            type="number"
+                                            placeholder="TL"
+                                            className="flex-1 bg-slate-50 border border-slate-100 rounded-xl px-4 h-12 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all"
+                                            value={action.price}
+                                            onChange={(e) => {
+                                                const newActions = [...formData.actions];
+                                                newActions[index].price = e.target.value;
+                                                setFormData({ ...formData, actions: newActions });
+                                            }}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const newActions = formData.actions.filter((_, i) => i !== index);
+                                                setFormData({ ...formData, actions: newActions });
+                                            }}
+                                            className="p-3 text-red-400 hover:text-red-600 transition-colors"
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
 

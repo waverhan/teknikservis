@@ -34,6 +34,11 @@ interface IServiceRequest {
         name: string;
         phone: string;
     };
+    actions: {
+        id: string;
+        description: string;
+        price: number | string;
+    }[];
     receipt: {
         id: string;
         price: number | string;
@@ -58,6 +63,12 @@ export default function ServiceRequestDetailPage() {
                 .then(data => {
                     setRequest(data);
                     setLoading(false);
+                    // Pre-calculate grand total if there are actions
+                    if (data.actions && data.actions.length > 0) {
+                        const subtotal = data.actions.reduce((acc: number, action: any) => acc + Number(action.price), 0);
+                        const grandTotal = subtotal * 1.20;
+                        setReceiptPrice(grandTotal.toFixed(2));
+                    }
                 })
                 .catch(() => setLoading(false));
         }
@@ -202,6 +213,46 @@ export default function ServiceRequestDetailPage() {
                 </div>
             </section>
 
+            {/* Actions Performed Section */}
+            <section className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 space-y-4">
+                <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <CheckCircle2 size={14} /> Yapılan İşlemler
+                </h3>
+                <div className="space-y-3">
+                    {request.actions && request.actions.length > 0 ? (
+                        <>
+                            <div className="space-y-2">
+                                {request.actions.map((action, idx) => (
+                                    <div key={action.id} className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[10px] font-black text-slate-300">{idx + 1}</span>
+                                            <p className="text-xs font-bold text-slate-700">{action.description}</p>
+                                        </div>
+                                        <p className="text-xs font-black text-slate-900">{Number(action.price).toLocaleString('tr-TR')} TL</p>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="pt-2 border-t border-slate-100 flex justify-between items-end">
+                                <div>
+                                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Ara Toplam</p>
+                                    <p className="text-sm font-black text-slate-900">
+                                        {request.actions.reduce((acc, a) => acc + Number(a.price), 0).toLocaleString('tr-TR')} TL
+                                    </p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-[8px] font-black text-blue-400 uppercase tracking-widest">+ %20 KDV</p>
+                                    <p className="text-lg font-black text-blue-600">
+                                        {(request.actions.reduce((acc, a) => acc + Number(a.price), 0) * 1.20).toLocaleString('tr-TR')} TL
+                                    </p>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <p className="text-xs font-bold text-slate-400 text-center py-4 italic">İşlem bilgisi girilmemiş.</p>
+                    )}
+                </div>
+            </section>
+
             {/* Status Update Actions */}
             <section className="bg-slate-50 p-6 rounded-[2rem] border border-slate-200/50 space-y-4">
                 <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Durum Güncelle</h3>
@@ -259,17 +310,36 @@ export default function ServiceRequestDetailPage() {
                         <p className="text-xs text-slate-400 font-bold mb-6">İşlemi tamamlamak için tutar girin.</p>
 
                         <form onSubmit={handleCreateReceipt} className="space-y-6">
-                            <div className="space-y-2 text-left">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Servis Ücreti (TL)</label>
-                                <input
-                                    required
-                                    autoFocus
-                                    type="number"
-                                    placeholder="0.00"
-                                    className="w-full h-16 bg-slate-50 border border-slate-100 rounded-2xl px-6 text-2xl font-black text-slate-900 focus:bg-white focus:border-blue-500 outline-none transition-all shadow-inner"
-                                    value={receiptPrice}
-                                    onChange={(e) => setReceiptPrice(e.target.value)}
-                                />
+                            <div className="space-y-4 text-left">
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Ödeme Tutarı (KDV Dahil)</label>
+                                <div className="space-y-4">
+                                    <input
+                                        required
+                                        autoFocus
+                                        type="number"
+                                        placeholder="0.00"
+                                        className="w-full h-16 bg-slate-50 border border-slate-100 rounded-2xl px-6 text-2xl font-black text-slate-900 focus:bg-white focus:border-blue-500 outline-none transition-all shadow-inner"
+                                        value={receiptPrice}
+                                        onChange={(e) => setReceiptPrice(e.target.value)}
+                                    />
+
+                                    {request.actions && request.actions.length > 0 && (
+                                        <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100 space-y-2">
+                                            <div className="flex justify-between text-[10px] font-bold text-blue-400">
+                                                <span>ARA TOPLAM:</span>
+                                                <span>{request.actions.reduce((acc, a) => acc + Number(a.price), 0).toLocaleString('tr-TR')} TL</span>
+                                            </div>
+                                            <div className="flex justify-between text-[10px] font-bold text-blue-400">
+                                                <span>KDV (%20):</span>
+                                                <span>{(request.actions.reduce((acc, a) => acc + Number(a.price), 0) * 0.20).toLocaleString('tr-TR')} TL</span>
+                                            </div>
+                                            <div className="flex justify-between text-xs font-black text-blue-600 border-t border-blue-100 pt-2">
+                                                <span>HESAPLANAN TOPLAM:</span>
+                                                <span>{(request.actions.reduce((acc, a) => acc + Number(a.price), 0) * 1.20).toLocaleString('tr-TR')} TL</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="flex gap-3">
