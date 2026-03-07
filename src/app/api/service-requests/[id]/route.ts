@@ -20,7 +20,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
                 id: params.id,
                 businessId: session.businessId,
             },
-            include: { customer: true, receipt: true, actions: true },
+            include: { customer: true, receipt: true, actions: true, business: true },
         });
 
         if (!serviceRequest) return NextResponse.json({ error: "Service request not found" }, { status: 404 });

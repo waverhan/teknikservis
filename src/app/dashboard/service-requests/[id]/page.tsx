@@ -43,6 +43,12 @@ interface IServiceRequest {
         id: string;
         price: number | string;
     } | null;
+    business: {
+        name: string;
+        phone: string | null;
+        address: string | null;
+        slug: string;
+    };
 }
 
 export default function ServiceRequestDetailPage() {
@@ -63,11 +69,10 @@ export default function ServiceRequestDetailPage() {
                 .then(data => {
                     setRequest(data);
                     setLoading(false);
-                    // Pre-calculate grand total if there are actions
+                    // Pre-calculate grand total if there are actions (Total is now inclusive)
                     if (data.actions && data.actions.length > 0) {
-                        const subtotal = data.actions.reduce((acc: number, action: IServiceRequest['actions'][0]) => acc + Number(action.price), 0);
-                        const grandTotal = subtotal * 1.20;
-                        setReceiptPrice(grandTotal.toFixed(2));
+                        const total = data.actions.reduce((acc: number, action: IServiceRequest['actions'][0]) => acc + Number(action.price), 0);
+                        setReceiptPrice(total.toFixed(2));
                     }
                 })
                 .catch(() => setLoading(false));
@@ -234,15 +239,15 @@ export default function ServiceRequestDetailPage() {
                             </div>
                             <div className="pt-2 border-t border-slate-100 flex justify-between items-end">
                                 <div>
-                                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Ara Toplam</p>
-                                    <p className="text-sm font-black text-slate-900">
-                                        {request.actions.reduce((acc, a) => acc + Number(a.price), 0).toLocaleString('tr-TR')} TL
+                                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">KDV (%20) DAHİL</p>
+                                    <p className="text-xs font-black text-slate-500 italic">
+                                        Matrah: {(request.actions.reduce((acc, a) => acc + Number(a.price), 0) / 1.20).toLocaleString('tr-TR')} TL
                                     </p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-[8px] font-black text-blue-400 uppercase tracking-widest">+ %20 KDV</p>
+                                    <p className="text-[8px] font-black text-blue-400 uppercase tracking-widest">TOPLAM TUTAR</p>
                                     <p className="text-lg font-black text-blue-600">
-                                        {(request.actions.reduce((acc, a) => acc + Number(a.price), 0) * 1.20).toLocaleString('tr-TR')} TL
+                                        {request.actions.reduce((acc, a) => acc + Number(a.price), 0).toLocaleString('tr-TR')} TL
                                     </p>
                                 </div>
                             </div>
@@ -326,16 +331,16 @@ export default function ServiceRequestDetailPage() {
                                     {request.actions && request.actions.length > 0 && (
                                         <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100 space-y-2">
                                             <div className="flex justify-between text-[10px] font-bold text-blue-400">
-                                                <span>ARA TOPLAM:</span>
-                                                <span>{request.actions.reduce((acc, a) => acc + Number(a.price), 0).toLocaleString('tr-TR')} TL</span>
+                                                <span>MATRAH:</span>
+                                                <span>{(request.actions.reduce((acc, a) => acc + Number(a.price), 0) / 1.20).toLocaleString('tr-TR')} TL</span>
                                             </div>
                                             <div className="flex justify-between text-[10px] font-bold text-blue-400">
-                                                <span>KDV (%20):</span>
-                                                <span>{(request.actions.reduce((acc, a) => acc + Number(a.price), 0) * 0.20).toLocaleString('tr-TR')} TL</span>
+                                                <span>KDV DAHİL (%20):</span>
+                                                <span>{(request.actions.reduce((acc, a) => acc + Number(a.price), 0) - (request.actions.reduce((acc, a) => acc + Number(a.price), 0) / 1.20)).toLocaleString('tr-TR')} TL</span>
                                             </div>
                                             <div className="flex justify-between text-xs font-black text-blue-600 border-t border-blue-100 pt-2">
                                                 <span>HESAPLANAN TOPLAM:</span>
-                                                <span>{(request.actions.reduce((acc, a) => acc + Number(a.price), 0) * 1.20).toLocaleString('tr-TR')} TL</span>
+                                                <span>{request.actions.reduce((acc, a) => acc + Number(a.price), 0).toLocaleString('tr-TR')} TL</span>
                                             </div>
                                         </div>
                                     )}
@@ -366,7 +371,7 @@ export default function ServiceRequestDetailPage() {
             {/* Print Modal */}
             {showPrintModal && request.receipt && (
                 <PrintReceipt
-                    business={{ name: "Teknik Servis Hub", phone: "Destek Hattı", address: "Servis Merkezi" }}
+                    business={request.business}
                     customer={request.customer}
                     serviceRequest={id ? request : { ...request, id: id as string }}
                     receipt={request.receipt}
