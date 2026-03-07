@@ -23,8 +23,8 @@ export async function GET() {
             orderBy: { createdAt: 'desc' }
         });
         return NextResponse.json(users);
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        return NextResponse.json({ error: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
     }
 }
 
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
             name: user.name,
             role: user.role
         });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        return NextResponse.json({ error: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
     }
 }

@@ -52,13 +52,15 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
             if (!check) return NextResponse.json({ error: "Access denied" }, { status: 403 });
         }
 
-        const updateData: any = {};
+        const updateData: Record<string, unknown> = {};
         if (status) updateData.status = status as ServiceStatus;
         if (description !== undefined && session.role === 'ADMIN') updateData.description = description;
         if (notes !== undefined && session.role === 'ADMIN') updateData.notes = notes;
         if (deviceBrand !== undefined && session.role === 'ADMIN') updateData.deviceBrand = deviceBrand;
         if (deviceModel !== undefined && session.role === 'ADMIN') updateData.deviceModel = deviceModel;
-        if (technicianId !== undefined && session.role === 'ADMIN') updateData.technicianId = technicianId;
+        if (technicianId !== undefined && session.role === 'ADMIN') {
+            updateData.technician = technicianId ? { connect: { id: technicianId } } : { disconnect: true };
+        }
 
         if (actions) {
             updateData.actions = {
@@ -75,7 +77,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
                 id: params.id,
                 businessId: session.businessId,
             },
-            data: updateData,
+            data: updateData as Prisma.ServiceRequestUpdateInput,
             include: { customer: true, receipt: true, actions: true },
         });
 
