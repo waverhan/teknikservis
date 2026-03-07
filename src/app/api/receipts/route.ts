@@ -15,8 +15,9 @@ export async function GET() {
             },
             include: {
                 serviceRequest: {
-                    include: { customer: true },
+                    include: { customer: true, actions: true },
                 },
+                business: true,
             },
             orderBy: {
                 createdAt: 'desc',
@@ -49,8 +50,9 @@ export async function POST(req: Request) {
                 },
                 include: {
                     serviceRequest: {
-                        include: { customer: true }
-                    }
+                        include: { customer: true, actions: true }
+                    },
+                    business: true,
                 }
             }),
             prisma.serviceRequest.update({

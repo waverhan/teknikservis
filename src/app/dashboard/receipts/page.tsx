@@ -18,6 +18,13 @@ interface IReceipt {
             phone: string;
             address?: string;
         };
+        actions?: { description: string; price: number | string }[];
+    };
+    business: {
+        name: string;
+        phone: string | null;
+        address: string | null;
+        slug: string;
     };
 }
 
@@ -121,7 +128,7 @@ export default function ReceiptsPage() {
             {/* Web Print Modal (V1) */}
             {showPrintModal && selectedReceipt && (
                 <PrintReceipt
-                    business={{ name: "ServiceFlow Hizmet", phone: "Destek", address: "Teknik Servis" }}
+                    business={selectedReceipt.business}
                     customer={selectedReceipt.serviceRequest.customer}
                     serviceRequest={selectedReceipt.serviceRequest}
                     receipt={selectedReceipt}
