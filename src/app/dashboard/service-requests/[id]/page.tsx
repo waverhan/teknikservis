@@ -65,7 +65,7 @@ export default function ServiceRequestDetailPage() {
                     setLoading(false);
                     // Pre-calculate grand total if there are actions
                     if (data.actions && data.actions.length > 0) {
-                        const subtotal = data.actions.reduce((acc: number, action: any) => acc + Number(action.price), 0);
+                        const subtotal = data.actions.reduce((acc: number, action: IServiceRequest['actions'][0]) => acc + Number(action.price), 0);
                         const grandTotal = subtotal * 1.20;
                         setReceiptPrice(grandTotal.toFixed(2));
                     }

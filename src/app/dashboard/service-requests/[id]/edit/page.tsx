@@ -229,65 +229,68 @@ export default function EditServiceRequestPage() {
                         </div>
                     </div>
 
-                    {/* Actions Performed */}
-                    <div className="space-y-4 pt-4 border-t border-slate-100">
-                        <div className="flex items-center justify-between">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Yapılan İşlemler</label>
-                            <button
-                                type="button"
-                                onClick={() => setFormData({
-                                    ...formData,
-                                    actions: [...formData.actions, { description: '', price: '' }]
-                                })}
-                                className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-blue-600 hover:text-white transition-all"
-                            >
-                                + İŞLEM EKLE
-                            </button>
-                        </div>
+                </div>
 
-                        <div className="space-y-3">
-                            {formData.actions.map((action, index) => (
-                                <div key={index} className="flex gap-2">
-                                    <input
-                                        type="text"
-                                        placeholder="İşlem açıklaması"
-                                        className="flex-[2] bg-slate-50 border border-slate-100 rounded-xl px-4 h-12 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all"
-                                        value={action.description}
-                                        onChange={(e) => {
-                                            const newActions = [...formData.actions];
-                                            newActions[index].description = e.target.value;
-                                            setFormData({ ...formData, actions: newActions });
-                                        }}
-                                    />
-                                    <input
-                                        type="number"
-                                        placeholder="Fiyat"
-                                        className="flex-1 bg-slate-50 border border-slate-100 rounded-xl px-4 h-12 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all"
-                                        value={action.price}
-                                        onChange={(e) => {
-                                            const newActions = [...formData.actions];
-                                            newActions[index].price = e.target.value;
-                                            setFormData({ ...formData, actions: newActions });
-                                        }}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            const newActions = formData.actions.filter((_, i) => i !== index);
-                                            setFormData({ ...formData, actions: newActions });
-                                        }}
-                                        className="p-3 text-red-400 hover:text-red-600 transition-colors"
-                                    >
-                                        <Trash2 size={18} />
-                                    </button>
-                                </div>
-                            ))}
-                            {formData.actions.length === 0 && (
-                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center py-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                                    Henüz işlem eklenmedi
-                                </p>
-                            )}
-                        </div>
+                {/* Yapılan İşlemler Card */}
+                <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 space-y-4">
+                    <div className="flex items-center justify-between">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                            <CheckCircle2 size={14} className="text-blue-500" /> Yapılan İşlemler
+                        </label>
+                        <button
+                            type="button"
+                            onClick={() => setFormData({
+                                ...formData,
+                                actions: [...formData.actions, { description: '', price: '' }]
+                            })}
+                            className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                        >
+                            + İŞLEM EKLE
+                        </button>
+                    </div>
+
+                    <div className="space-y-3">
+                        {formData.actions.map((action, index) => (
+                            <div key={index} className="flex gap-2 animate-in slide-in-from-left-2 duration-300">
+                                <input
+                                    type="text"
+                                    placeholder="İşlem açıklaması"
+                                    className="flex-[2] bg-slate-50 border border-slate-100 rounded-xl px-4 h-12 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all"
+                                    value={action.description}
+                                    onChange={(e) => {
+                                        const newActions = [...formData.actions];
+                                        newActions[index].description = e.target.value;
+                                        setFormData({ ...formData, actions: newActions });
+                                    }}
+                                />
+                                <input
+                                    type="number"
+                                    placeholder="Fiyat"
+                                    className="flex-1 bg-slate-50 border border-slate-100 rounded-xl px-4 h-12 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all"
+                                    value={action.price}
+                                    onChange={(e) => {
+                                        const newActions = [...formData.actions];
+                                        newActions[index].price = e.target.value;
+                                        setFormData({ ...formData, actions: newActions });
+                                    }}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const newActions = formData.actions.filter((_, i) => i !== index);
+                                        setFormData({ ...formData, actions: newActions });
+                                    }}
+                                    className="p-3 text-red-500 bg-red-50 rounded-xl hover:bg-red-100 transition-colors shadow-sm"
+                                >
+                                    <Trash2 size={18} />
+                                </button>
+                            </div>
+                        ))}
+                        {formData.actions.length === 0 && (
+                            <div className="p-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-center">
+                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] italic">Henüz bir işlem eklenmedi</p>
+                            </div>
+                        )}
                     </div>
                 </div>
 

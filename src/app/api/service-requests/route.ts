@@ -40,9 +40,9 @@ export async function POST(req: Request) {
                 deviceModel,
                 businessId: session.businessId,
                 actions: actions ? {
-                    create: actions.map((a: any) => ({
+                    create: (actions as { description: string; price: string | number }[]).map((a) => ({
                         description: a.description,
-                        price: parseFloat(a.price) || 0
+                        price: parseFloat(a.price.toString()) || 0
                     }))
                 } : undefined
             },

@@ -4,6 +4,11 @@ import { getSession } from "@/lib/auth";
 
 export const dynamic = 'force-dynamic';
 
+interface IServiceAction {
+    description: string;
+    price: string | number;
+}
+
 export async function GET(req: Request, { params }: { params: { id: string } }) {
     const session = await getSession();
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -32,8 +37,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         const body = await req.json();
         const { status, description, notes, deviceBrand, deviceModel, actions } = body;
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const updateData: any = {};
+        const updateData: Record<string, any> = {};
         if (status) updateData.status = status;
         if (description !== undefined) updateData.description = description;
         if (notes !== undefined) updateData.notes = notes;
@@ -43,9 +47,9 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         if (actions) {
             updateData.actions = {
                 deleteMany: {},
-                create: actions.map((a: any) => ({
+                create: actions.map((a: IServiceAction) => ({
                     description: a.description,
-                    price: parseFloat(a.price) || 0
+                    price: parseFloat(a.price.toString()) || 0
                 }))
             };
         }
@@ -60,12 +64,11 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         });
 
         return NextResponse.json(serviceRequest);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (error) {
         console.error("Service request update error:", error);
         return NextResponse.json({
             error: "Failed to update service request",
-            details: error.message
+            details: error instanceof Error ? error.message : "Unknown error"
         }, { status: 500 });
     }
 }
