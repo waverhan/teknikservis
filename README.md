@@ -74,7 +74,22 @@ The system is designed for real-world technician workflows and optimized for mob
 
 ---
 
-## 🚀 V3 – Multi-Tenant Public Websites
+## ✅ V3 – User Roles & Task Assignment
+
+- **Role-Based Access Control (RBAC):**
+  - **Admin:** Full control over the business, team management, and all service requests.
+  - **Technician:** Specialized view, access only to assigned tasks, simplified workflow.
+- **Team Management:**
+  - Capability for Admins to add and manage unlimited technicians.
+  - Role-specific dashboard views and navigation.
+- **Task Assignment System:**
+  - Assign specific technicians to service requests.
+  - Technician-specific job queues for improved focus.
+  - Real-time status updates and action tracking by assigned staff.
+
+---
+
+## 🚀 V4 – Multi-Tenant Public Websites
 
 ### Multi-Tenant SaaS System
 
@@ -86,8 +101,8 @@ Each service company (tenant):
 - Can customize branding
 - Can receive public service requests
 
-Example:tenant1.yourapp.com
-Future:tenantdomain.com
+Example: `tenant1.teknikservis.com`
+Future: `customdomain.com`
 
 
 ---
@@ -134,6 +149,25 @@ Requests created with:
 
 - status = NEW
 - source = PUBLIC_SITE
+
+---
+
+# 👥 Team Management & User Roles
+
+The platform supports a hierarchical user system optimized for service centers:
+
+### Admin Workspace
+- Dashboard with overhead view of all active/pending jobs.
+- Ability to see which technician is working on which job.
+- Full access to customer database, service catalog, and team management.
+- Dedicated Team page to add, edit, or remove staff members.
+
+### Technician Workspace
+- Mobile-optimized focused view.
+- "My Jobs" section showing only tasks assigned specifically to that technician.
+- Simplified workflow to add actions, set prices, and complete assigned tasks.
+- Immediate receipt generation for customers upon completion.
+- Restricted access to ensure business data security.
 
 ---
 
@@ -251,7 +285,8 @@ Future roadmap includes:
 
 - V1: Completed
 - V2: Completed
-- V3: Multi-tenant public websites in development
+- V3: Completed (User Roles & Task Assignment)
+- V4: Public websites & SEO (In Progress)
 
 ---
 
