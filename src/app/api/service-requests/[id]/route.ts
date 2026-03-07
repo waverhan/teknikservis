@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { Prisma, ServiceStatus } from "@prisma/client";
 
 export const dynamic = 'force-dynamic';
 
@@ -37,8 +38,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         const body = await req.json();
         const { status, description, notes, deviceBrand, deviceModel, actions } = body;
 
-        const updateData: Record<string, any> = {};
-        if (status) updateData.status = status;
+        const updateData: Prisma.ServiceRequestUpdateInput = {};
+        if (status) updateData.status = status as ServiceStatus;
         if (description !== undefined) updateData.description = description;
         if (notes !== undefined) updateData.notes = notes;
         if (deviceBrand !== undefined) updateData.deviceBrand = deviceBrand;
@@ -49,7 +50,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
                 deleteMany: {},
                 create: actions.map((a: IServiceAction) => ({
                     description: a.description,
-                    price: parseFloat(a.price.toString()) || 0
+                    price: new Prisma.Decimal(parseFloat(a.price.toString()) || 0)
                 }))
             };
         }
