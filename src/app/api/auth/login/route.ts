@@ -12,30 +12,42 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Missing email or password" }, { status: 400 });
         }
 
-        const business = await prisma.business.findUnique({
+        const user = await prisma.user.findUnique({
             where: { email },
+            include: { business: true }
         });
 
-        if (!business) {
+        if (!user) {
             return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
         }
 
-        const isMatch = await comparePasswords(password, business.hashedPassword);
+        const isMatch = await comparePasswords(password, user.hashedPassword);
 
         if (!isMatch) {
             return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
         }
 
-        const token = await signJWT({ businessId: business.id, email: business.email });
+        const token = await signJWT({
+            userId: user.id,
+            businessId: user.businessId,
+            email: user.email,
+            role: user.role
+        });
 
         const response = NextResponse.json({
             message: "Logged in successfully",
-            token, // Mobile needs the token in body
+            token,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            },
             business: {
-                id: business.id,
-                name: business.name,
-                email: business.email,
-                slug: business.slug
+                id: user.business.id,
+                name: user.business.name,
+                email: user.business.email,
+                slug: user.business.slug
             }
         });
 

@@ -26,15 +26,24 @@ interface ServiceRequest {
     customer: {
         name: string;
     };
+    technician?: {
+        name: string;
+    } | null;
 }
 
 export default function ServiceRequestsPage() {
     const [requests, setRequests] = useState<ServiceRequest[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [userRole, setUserRole] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
+        // Fetch role
+        fetch('/api/auth/me')
+            .then(res => res.json())
+            .then(data => setUserRole(data.role));
+
         fetch('/api/service-requests')
             .then(res => res.json())
             .then(data => {
@@ -97,13 +106,15 @@ export default function ServiceRequestsPage() {
                     </button>
                     <h1 className="text-xl font-bold text-slate-900 tracking-tight">İş Emirleri</h1>
                 </div>
-                <Link
-                    href="/dashboard/service-requests/new"
-                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-2xl font-bold text-sm shadow-lg shadow-blue-100 active:scale-95 transition-all"
-                >
-                    <Plus size={18} />
-                    <span>Yeni İş</span>
-                </Link>
+                {userRole === 'ADMIN' && (
+                    <Link
+                        href="/dashboard/service-requests/new"
+                        className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-2xl font-bold text-sm shadow-lg shadow-blue-100 active:scale-95 transition-all"
+                    >
+                        <Plus size={18} />
+                        <span>Yeni İş</span>
+                    </Link>
+                )}
             </header>
 
             {/* Search */}
@@ -155,7 +166,12 @@ export default function ServiceRequestsPage() {
                             </div>
 
                             <div className="flex items-center justify-between pt-3 border-t border-slate-50">
-                                <span className="text-xs font-bold text-slate-400 uppercase tracking-tight">{request.customer.name}</span>
+                                <div className="flex flex-col">
+                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-tight">{request.customer.name}</span>
+                                    {userRole === 'ADMIN' && request.technician && (
+                                        <span className="text-[9px] font-black text-blue-500 uppercase tracking-widest mt-0.5">Atanan: {request.technician.name}</span>
+                                    )}
+                                </div>
                                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
                                     {new Date(request.createdAt).toLocaleDateString('tr-TR')}
                                 </span>

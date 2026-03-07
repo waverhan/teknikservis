@@ -14,7 +14,7 @@ export async function comparePasswords(plain: string, hashed: string) {
     return bcrypt.compare(plain, hashed);
 }
 
-export async function signJWT(payload: { businessId: string; email: string }) {
+export async function signJWT(payload: { userId: string; businessId: string; email: string; role: string }) {
     return new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
@@ -25,7 +25,7 @@ export async function signJWT(payload: { businessId: string; email: string }) {
 export async function verifyJWT(token: string) {
     try {
         const { payload } = await jwtVerify(token, secret);
-        return payload as { businessId: string; email: string };
+        return payload as { userId: string; businessId: string; email: string; role: string };
     } catch {
         return null;
     }

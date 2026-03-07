@@ -27,18 +27,30 @@ export default function NewServiceRequestPage() {
     const [error, setError] = useState('');
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [technicians, setTechnicians] = useState<{ id: string, name: string }[]>([]);
 
     const [formData, setFormData] = useState({
         deviceBrand: '',
         deviceModel: '',
         description: '',
         notes: '',
+        technicianId: '',
         actions: [] as { description: string; price: string | number }[]
     });
 
     const router = useRouter();
 
     useEffect(() => {
+        // Check role
+        fetch('/api/auth/me')
+            .then(res => res.json())
+            .then(data => {
+                if (data.role === 'TECHNICIAN') {
+                    router.push('/dashboard/service-requests');
+                }
+            });
+
+        // Fetch customers
         fetch('/api/customers')
             .then(res => res.json())
             .then(data => {
@@ -46,7 +58,16 @@ export default function NewServiceRequestPage() {
                 setFetchingCustomers(false);
             })
             .catch(() => setFetchingCustomers(false));
-    }, []);
+
+        // Fetch technicians
+        fetch('/api/business/users')
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    setTechnicians(data.filter((u: { role: string }) => u.role === 'TECHNICIAN'));
+                }
+            });
+    }, [router]);
 
     const filteredCustomers = customers.filter(c =>
         c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -227,6 +248,19 @@ export default function NewServiceRequestPage() {
                                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                             />
                         </div>
+                    </div>
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Teknisyen Ata (Opsiyonel)</label>
+                        <select
+                            className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 h-12 text-sm font-bold focus:bg-white focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer"
+                            value={formData.technicianId}
+                            onChange={(e) => setFormData({ ...formData, technicianId: e.target.value })}
+                        >
+                            <option value="">Teknisyen Seçin (Boş Bırakılabilir)</option>
+                            {technicians.map(t => (
+                                <option key={t.id} value={t.id}>{t.name}</option>
+                            ))}
+                        </select>
                     </div>
                 </div>
 

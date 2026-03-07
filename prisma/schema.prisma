@@ -15,6 +15,11 @@ enum ServiceStatus {
   COMPLETED
 }
 
+enum UserRole {
+  ADMIN
+  TECHNICIAN
+}
+
 model Business {
   id                String           @id @default(cuid())
   email             String           @unique
@@ -33,11 +38,27 @@ model Business {
   googleMapsUrl     String?
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
+  users             User[]
   customers         Customer[]
   serviceRequests   ServiceRequest[]
   receipts          Receipt[]
   services          OfferedService[]
   reviews           Review[]
+}
+
+model User {
+  id              String           @id @default(cuid())
+  email           String           @unique
+  hashedPassword String
+  name            String
+  role            UserRole         @default(TECHNICIAN)
+  businessId      String
+  business        Business         @relation(fields: [businessId], references: [id])
+  assignedJobs    ServiceRequest[] @relation("TechnicianJobs")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([businessId])
 }
 
 model Customer {
@@ -66,6 +87,8 @@ model ServiceRequest {
   business    Business @relation(fields: [businessId], references: [id])
   customerId  String
   customer    Customer @relation(fields: [customerId], references: [id])
+  technicianId String?
+  technician   User?    @relation("TechnicianJobs", fields: [technicianId], references: [id])
   actions     ServiceAction[]
   receipt     Receipt?
   createdAt   DateTime @default(now())
@@ -73,6 +96,7 @@ model ServiceRequest {
 
   @@index([businessId])
   @@index([customerId])
+  @@index([technicianId])
 }
 
 model ServiceAction {

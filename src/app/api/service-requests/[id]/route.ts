@@ -20,10 +20,16 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
                 id: params.id,
                 businessId: session.businessId,
             },
-            include: { customer: true, receipt: true, actions: true, business: true },
+            include: { customer: true, receipt: true, actions: true, business: true, technician: true },
         });
 
         if (!serviceRequest) return NextResponse.json({ error: "Service request not found" }, { status: 404 });
+
+        // Security check for Technicians
+        if (session.role === 'TECHNICIAN' && serviceRequest.technicianId !== session.userId) {
+            return NextResponse.json({ error: "Access denied" }, { status: 403 });
+        }
+
         return NextResponse.json(serviceRequest);
     } catch {
         return NextResponse.json({ error: "Failed to fetch service request" }, { status: 500 });
@@ -36,14 +42,23 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
     try {
         const body = await req.json();
-        const { status, description, notes, deviceBrand, deviceModel, actions } = body;
+        const { status, description, notes, deviceBrand, deviceModel, actions, technicianId } = body;
 
-        const updateData: Prisma.ServiceRequestUpdateInput = {};
+        // Security check: Technicians can only update status and actions of their own jobs
+        if (session.role === 'TECHNICIAN') {
+            const check = await prisma.serviceRequest.findFirst({
+                where: { id: params.id, businessId: session.businessId, technicianId: session.userId }
+            });
+            if (!check) return NextResponse.json({ error: "Access denied" }, { status: 403 });
+        }
+
+        const updateData: any = {};
         if (status) updateData.status = status as ServiceStatus;
-        if (description !== undefined) updateData.description = description;
-        if (notes !== undefined) updateData.notes = notes;
-        if (deviceBrand !== undefined) updateData.deviceBrand = deviceBrand;
-        if (deviceModel !== undefined) updateData.deviceModel = deviceModel;
+        if (description !== undefined && session.role === 'ADMIN') updateData.description = description;
+        if (notes !== undefined && session.role === 'ADMIN') updateData.notes = notes;
+        if (deviceBrand !== undefined && session.role === 'ADMIN') updateData.deviceBrand = deviceBrand;
+        if (deviceModel !== undefined && session.role === 'ADMIN') updateData.deviceModel = deviceModel;
+        if (technicianId !== undefined && session.role === 'ADMIN') updateData.technicianId = technicianId;
 
         if (actions) {
             updateData.actions = {
@@ -76,7 +91,9 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
     const session = await getSession();
-    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!session || session.role !== 'ADMIN') {
+        return NextResponse.json({ error: "Access denied. Only Admins can delete." }, { status: 403 });
+    }
 
     try {
         // Note: Business rule could be to not allow delete if receipt exists

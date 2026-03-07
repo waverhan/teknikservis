@@ -6,37 +6,30 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
     const session = await getSession();
-    if (!session) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     try {
-        const business = await prisma.business.findUnique({
-            where: { id: session.businessId },
+        const user = await prisma.user.findUnique({
+            where: { id: session.userId },
             select: {
                 id: true,
-                name: true,
                 email: true,
-                slug: true,
-                phone: true,
-                address: true,
-                logo: true,
-                primaryColor: true,
-                publicDescription: true,
-                isPublic: true,
-                customDomain: true,
-                googleMapsUrl: true,
-                coverImage: true,
+                name: true,
+                role: true,
+                business: {
+                    select: {
+                        id: true,
+                        name: true,
+                        slug: true
+                    }
+                }
             }
         });
 
-        if (!business) {
-            return NextResponse.json({ error: "Business not found" }, { status: 404 });
-        }
+        if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-        return NextResponse.json({ business });
-    } catch (error) {
-        console.error("Auth Me Error:", error);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        return NextResponse.json(user);
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

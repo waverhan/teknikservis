@@ -1,19 +1,33 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Users, ClipboardList, Settings, ReceiptText, Wrench } from 'lucide-react';
 
 const BottomNav = () => {
     const pathname = usePathname();
+    const [role, setRole] = useState<string | null>(null);
+
+    useEffect(() => {
+        fetch('/api/auth/me')
+            .then(res => res.json())
+            .then(data => setRole(data.role))
+            .catch(() => setRole(null));
+    }, []);
 
     const navItems = [
         { label: 'Ana Sayfa', icon: Home, href: '/dashboard' },
-        { label: 'Hizmetler', icon: Wrench, href: '/dashboard/services' },
-        { label: 'Müşteriler', icon: Users, href: '/dashboard/customers' },
+        ...(role === 'ADMIN' ? [
+            { label: 'Hizmetler', icon: Wrench, href: '/dashboard/services' },
+            { label: 'Müşteriler', icon: Users, href: '/dashboard/customers' },
+            { label: 'Ekip', icon: Users, href: '/dashboard/team' },
+        ] : []),
         { label: 'İş Emirleri', icon: ClipboardList, href: '/dashboard/service-requests' },
         { label: 'Makbuzlar', icon: ReceiptText, href: '/dashboard/receipts' },
-        { label: 'Ayarlar', icon: Settings, href: '/dashboard/settings' },
+        ...(role === 'ADMIN' ? [
+            { label: 'Ayarlar', icon: Settings, href: '/dashboard/settings' },
+        ] : []),
     ];
 
     return (

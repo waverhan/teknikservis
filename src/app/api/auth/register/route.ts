@@ -12,33 +12,65 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
-        const existingUser = await prisma.business.findFirst({
-            where: { OR: [{ email }, { slug }] },
+        const existingBusiness = await prisma.business.findFirst({
+            where: { slug },
+        });
+
+        if (existingBusiness) {
+            return NextResponse.json({ error: `Slug already exists` }, { status: 409 });
+        }
+
+        const existingUser = await prisma.user.findFirst({
+            where: { email },
         });
 
         if (existingUser) {
-            const field = existingUser.email === email ? "Email" : "Slug";
-            return NextResponse.json({ error: `${field} already exists` }, { status: 409 });
+            return NextResponse.json({ error: `Email already exists` }, { status: 409 });
         }
 
         const hashedPassword = await hashPassword(password);
 
-        const business = await prisma.business.create({
-            data: {
-                email,
-                hashedPassword,
-                name,
-                phone,
-                address,
-                slug,
-            },
+        const { business, user } = await prisma.$transaction(async (tx) => {
+            const biz = await tx.business.create({
+                data: {
+                    email, // Keep for backward compat/ref during dev
+                    hashedPassword, // Keep for backward compat/ref during dev
+                    name,
+                    phone,
+                    address,
+                    slug,
+                },
+            });
+
+            const admin = await tx.user.create({
+                data: {
+                    email,
+                    hashedPassword,
+                    name, // Use business name or person name? User said "first account becomes admin"
+                    role: 'ADMIN',
+                    businessId: biz.id,
+                }
+            });
+
+            return { business: biz, user: admin };
         });
 
-        const token = await signJWT({ businessId: business.id, email: business.email });
+        const token = await signJWT({
+            userId: user.id,
+            businessId: business.id,
+            email: user.email,
+            role: user.role
+        });
 
         const response = NextResponse.json({
             message: "Account created successfully",
             token,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            },
             business: {
                 id: business.id,
                 name: business.name,
