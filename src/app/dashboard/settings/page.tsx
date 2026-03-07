@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { LogOut, Globe, ChevronRight } from 'lucide-react';
+import { LogOut, Globe, ChevronRight, Wrench, Users } from 'lucide-react';
 
 export default function SettingsPage() {
     const router = useRouter();
@@ -14,13 +14,26 @@ export default function SettingsPage() {
 
     const settingItems = [
         {
+            title: 'Hizmetler',
+            desc: 'Verdiğiniz hizmet kalemlerini ve fiyatlarını yönetin.',
+            icon: Wrench,
+            href: '/dashboard/services',
+            color: 'bg-amber-50 text-amber-600',
+        },
+        {
+            title: 'Ekip Yönetimi',
+            desc: 'Teknisyenlerinizi ve ekibinizi buradan yönetin.',
+            icon: Users,
+            href: '/dashboard/team',
+            color: 'bg-emerald-50 text-emerald-600',
+        },
+        {
             title: 'Web Sitem (Tanıtım Sayfası)',
             desc: 'Müşterilerinizin gördüğü sayfayı ve marka renklerini düzenleyin.',
             icon: Globe,
             href: '/dashboard/settings/public',
             color: 'bg-blue-50 text-blue-600',
         },
-        // We can add more here later like Profile, Security etc.
     ];
 
     return (

@@ -19,9 +19,7 @@ const BottomNav = () => {
     const navItems = [
         { label: 'Ana Sayfa', icon: Home, href: '/dashboard' },
         ...(role === 'ADMIN' ? [
-            { label: 'Hizmetler', icon: Wrench, href: '/dashboard/services' },
             { label: 'Müşteriler', icon: Users, href: '/dashboard/customers' },
-            { label: 'Ekip', icon: Users, href: '/dashboard/team' },
         ] : []),
         { label: 'İş Emirleri', icon: ClipboardList, href: '/dashboard/service-requests' },
         { label: 'Makbuzlar', icon: ReceiptText, href: '/dashboard/receipts' },
